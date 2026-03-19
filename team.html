@@ -7,16 +7,43 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div id="ticker-mount"></div>
-<div id="nav-mount"></div>
-
+<div class="ticker"><div class="ticker-track">
+<span>&#9650; MultiChoice / Canal+ &middot; $2.9B &middot; South Africa</span>
+<span>&#9650; Maziv / Vodacom &middot; $752M &middot; South Africa &middot; Infrastructure</span>
+<span>&#9650; Alameda Healthcare / DPI &middot; $190M &middot; Egypt</span>
+<span>&#9650; SMSPortal / Link Mobility &middot; $115M &middot; South Africa</span>
+<span>&#9650; Atlas Tower Kenya / STOA &middot; $27M &middot; Kenya</span>
+<span>&#9650; Zanaga Iron Ore &middot; $21.5M &middot; Republic of Congo</span>
+<span>&#9650; Safari Holdings / IFC &middot; $10M &middot; Kenya</span>
+<span>&#9650; Cape Town Property / Rainbow Tourism &middot; $5.6M</span>
+<span>&#9650; MultiChoice / Canal+ &middot; $2.9B &middot; South Africa</span>
+<span>&#9650; Maziv / Vodacom &middot; $752M &middot; South Africa &middot; Infrastructure</span>
+<span>&#9650; Alameda Healthcare / DPI &middot; $190M &middot; Egypt</span>
+<span>&#9650; SMSPortal / Link Mobility &middot; $115M &middot; South Africa</span>
+<span>&#9650; Atlas Tower Kenya / STOA &middot; $27M &middot; Kenya</span>
+<span>&#9650; Zanaga Iron Ore &middot; $21.5M &middot; Republic of Congo</span>
+<span>&#9650; Safari Holdings / IFC &middot; $10M &middot; Kenya</span>
+<span>&#9650; Cape Town Property / Rainbow Tourism &middot; $5.6M</span>
+</div></div>
+<nav>
+  <a href="index.html" class="logo-wrap"><div class="l1">DealFlow Africa</div><div class="l2">by Achievers Regal</div></a>
+  <button class="mobile-toggle" onclick="toggleMobileNav()">&#9776;</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="deals.html">Deals</a></li>
+    <li><a href="capital-flow.html">Capital Flow</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="team.html" class="active-page">Team</a></li>
+    <li><a href="contact.html" class="btn-cta">Get Access</a></li>
+    <li><button class="admin-btn" onclick="openLogin()">&#9881; Admin</button></li>
+  </ul>
+</nav>
 <div class="page-header">
   <div class="eyebrow">The Team</div>
   <h1>Our <em>People</em></h1>
   <p>Experienced professionals with deep roots in African finance, private capital, and deal advisory.</p>
 </div>
-
 <section>
   <div class="team-grid">
     <div class="tc">
@@ -43,29 +70,27 @@
     </div>
   </div>
 </section>
-
-<!-- CONTACT CTA -->
 <section style="border-top:1px solid var(--border);text-align:center;padding:60px 5%;">
-  <div class="sec-label" style="justify-content:center;">Get in touch</div>
-  <h2 class="sec-title" style="margin-top:8px;">Want to work with us?</h2>
+  <h2 class="sec-title">Want to work with us?</h2>
   <p style="font-size:14px;color:var(--muted);margin:12px auto 28px;max-width:440px;line-height:1.7;">Reach out for advisory services, database access, or to discuss a potential transaction.</p>
-  <a href="contact.html" style="display:inline-block;background:var(--gold);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 28px;border-radius:2px;text-decoration:none;letter-spacing:.04em;">Contact the Team &rarr;</a>
+  <a href="contact.html" style="display:inline-block;background:var(--gold);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 28px;border-radius:2px;text-decoration:none;">Contact the Team &rarr;</a>
 </section>
-
-<div id="footer-mount"></div>
-
+<footer>
+  <div class="fb"><div class="f1">DealFlow Africa</div><div class="f2">by Achievers Regal &middot; Nairobi, Kenya</div></div>
+  <div class="flinks"><a href="deals.html">Deals</a><a href="capital-flow.html">Capital Flow</a><a href="insights.html">Insights</a><a href="about.html">About</a><a href="team.html">Team</a><a href="contact.html">Contact</a></div>
+  <div class="fcopy">&copy; 2025 Achievers Regal. All rights reserved.</div>
+</footer>
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <div class="login-logo"><div class="lar"><span class="la">A</span><span class="lr">R</span></div><div class="lname">Achievers Regal</div></div>
-    <h3>Admin Access</h3><p>Enter your password to manage content</p>
-    <input type="password" id="loginInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="login-btn" onclick="doLogin()">Sign In &rarr;</button>
-    <div class="login-err" id="loginErr">Incorrect password. Please try again.</div>
+    <h3>Admin Access</h3><p>Enter your password</p>
+    <input type="password" id="loginInput" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr">Incorrect password.</div>
     <div style="margin-top:14px"><button onclick="document.getElementById('loginOverlay').classList.remove('open')" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button></div>
   </div>
 </div>
 <div class="admin-overlay" id="adminOverlay" style="display:none"></div>
-
 <script src="_shared.js"></script>
 </body>
 </html>
