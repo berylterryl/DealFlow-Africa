@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team | DealFlow Africa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ticker-mount"></div>
+<div id="nav-mount"></div>
+
+<div class="page-header">
+  <div class="eyebrow">The Team</div>
+  <h1>Our <em>People</em></h1>
+  <p>Experienced professionals with deep roots in African finance, private capital, and deal advisory.</p>
+</div>
+
+<section>
+  <div class="team-grid">
+    <div class="tc">
+      <div class="tc-init">GK</div>
+      <div class="tc-name">Grace Kagure</div>
+      <div class="tc-role">Co-Founder &middot; Equity Research &amp; Investment</div>
+      <div class="tc-bio">Grace&rsquo;s background in finance and equity research, coupled with extensive experience analyzing investment possibilities and market trends, makes her a key asset in the financial industry. Her approach identifies overlooked opportunities &mdash; particularly in clean energy, education, and healthcare across Africa.</div>
+      <div class="tc-links">
+        <a href="https://www.linkedin.com/in/grace-kagure-b13b24163/" target="_blank">LinkedIn &#8599;</a>
+        <a href="mailto:gkagure8@gmail.com">gkagure8@gmail.com</a>
+        <a href="tel:+254717579383">+254 717 579 383</a>
+      </div>
+    </div>
+    <div class="tc">
+      <div class="tc-init">BN</div>
+      <div class="tc-name">Beryl Nyajuoga, CPA</div>
+      <div class="tc-role">Co-Founder &middot; Corporate Finance &amp; Valuation</div>
+      <div class="tc-bio">Beryl&rsquo;s experience in fundraising, debt restructuring, valuation, due diligence, and financial management spans Fintech, Cleantech, Hospitality, Agriculture, Logistics, and FMCG. Her previous experience at Deloitte East Africa and Maitri Capital in Nairobi built a solid foundation in best practices across every stage of the deal lifecycle.</div>
+      <div class="tc-links">
+        <a href="https://www.linkedin.com/in/terryl-beryl-nyajuoga-cpa-34baba93" target="_blank">LinkedIn &#8599;</a>
+        <a href="mailto:terrylberyl@gmail.com">terrylberyl@gmail.com</a>
+        <a href="tel:+254727262212">+254 727 262 212</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT CTA -->
+<section style="border-top:1px solid var(--border);text-align:center;padding:60px 5%;">
+  <div class="sec-label" style="justify-content:center;">Get in touch</div>
+  <h2 class="sec-title" style="margin-top:8px;">Want to work with us?</h2>
+  <p style="font-size:14px;color:var(--muted);margin:12px auto 28px;max-width:440px;line-height:1.7;">Reach out for advisory services, database access, or to discuss a potential transaction.</p>
+  <a href="contact.html" style="display:inline-block;background:var(--gold);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 28px;border-radius:2px;text-decoration:none;letter-spacing:.04em;">Contact the Team &rarr;</a>
+</section>
+
+<div id="footer-mount"></div>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo"><div class="lar"><span class="la">A</span><span class="lr">R</span></div><div class="lname">Achievers Regal</div></div>
+    <h3>Admin Access</h3><p>Enter your password to manage content</p>
+    <input type="password" id="loginInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In &rarr;</button>
+    <div class="login-err" id="loginErr">Incorrect password. Please try again.</div>
+    <div style="margin-top:14px"><button onclick="document.getElementById('loginOverlay').classList.remove('open')" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button></div>
+  </div>
+</div>
+<div class="admin-overlay" id="adminOverlay" style="display:none"></div>
+
+<script src="_shared.js"></script>
+</body>
+</html>

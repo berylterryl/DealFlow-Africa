@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | DealFlow Africa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ticker-mount"></div>
+<div id="nav-mount"></div>
+
+<div class="page-header">
+  <div class="eyebrow">About Achievers Regal</div>
+  <h1>Scaling African Businesses<br><em>for a Brighter Future</em></h1>
+  <p>A finance and investment services firm run by experienced professionals, serving companies, investors, entrepreneurs, and organizations operating in Africa and beyond.</p>
+</div>
+
+<section>
+  <div class="about-grid">
+    <div class="about-body">
+      <p>Achievers Regal is a finance and investment services firm run by a team of experienced professionals. We serve companies, investors, entrepreneurs, and organizations operating in Africa and beyond.</p>
+      <p>We specialize in mergers and acquisitions, fundraising, valuation, financial modelling and forecasting, and deal advisory. Our research and data insights power products like DealFlow Africa &mdash; the continent&rsquo;s curated private capital intelligence platform.</p>
+      <p>With deep understanding of the African market, we help our clients make informed business decisions &mdash; from first-time investors to established funds and DFIs.</p>
+      <div class="creds">
+        <div class="cred"><div class="cdot"></div><p>Experienced in financial modelling, scenario design, and IM-ready decks</p></div>
+        <div class="cred"><div class="cdot"></div><p>Network across funds, DFIs, and operators across Africa</p></div>
+        <div class="cred"><div class="cdot"></div><p>Clean editorial policy with rapid corrections on all published data</p></div>
+        <div class="cred"><div class="cdot"></div><p>Sector expertise across Fintech, Cleantech, Healthcare, Agriculture, Logistics, and FMCG</p></div>
+      </div>
+    </div>
+    <div class="svc-grid">
+      <div class="svc">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=400&q=80" alt="Strategic Advisory" onerror="this.style.display='none'">
+        <div class="svc-body"><div class="sn">Strategic Advisory</div><div class="sd">Business review, market research, and corporate governance expertise for better decision-making.</div></div>
+      </div>
+      <div class="svc">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Deal Advisory" onerror="this.style.display='none'">
+        <div class="svc-body"><div class="sn">Deal Advisory</div><div class="sd">Due diligence, financial valuation, transaction structuring, and negotiation support.</div></div>
+      </div>
+      <div class="svc">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&q=80" alt="SME Advisory" onerror="this.style.display='none'">
+        <div class="svc-body"><div class="sn">SME &amp; Start-Up Advisory</div><div class="sd">Bespoke services: strategy, fundraising, financial planning, and skills evaluation.</div></div>
+      </div>
+      <div class="svc">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80" alt="Investor Readiness" onerror="this.style.display='none'">
+        <div class="svc-body"><div class="sn">Investor Readiness</div><div class="sd">Robust business models, risk analysis, and governance advice for market entry.</div></div>
+      </div>
+      <div class="svc">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80" alt="Corporate Finance" onerror="this.style.display='none'">
+        <div class="svc-body"><div class="sn">Corporate Finance</div><div class="sd">M&amp;A, capital raising, and private equity advisory for ambitious businesses.</div></div>
+      </div>
+      <div class="svc">
+        <img class="svc-img" src="https://images.unsplash.com/photo-1664575602554-2087b04935a5?w=400&q=80" alt="CFO Services" onerror="this.style.display='none'">
+        <div class="svc-body"><div class="sn">CFO Services</div><div class="sd">Embedded financial planning, analysis, and strategic advice as your interim CFO.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section style="border-top:1px solid var(--border);text-align:center;padding:60px 5%;">
+  <div class="sec-label" style="justify-content:center;">Work with us</div>
+  <h2 class="sec-title" style="margin-top:8px;">Ready to get started?</h2>
+  <p style="font-size:14px;color:var(--muted);margin:12px auto 28px;max-width:460px;line-height:1.7;">Whether you need deal advisory, a financial model, or access to the full DealFlow Africa database &mdash; reach out and let&rsquo;s talk.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+    <a href="contact.html" style="display:inline-block;background:var(--gold);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 28px;border-radius:2px;text-decoration:none;letter-spacing:.04em;">Get in Touch &rarr;</a>
+    <a href="team.html" style="display:inline-block;background:transparent;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 28px;border-radius:2px;text-decoration:none;border:1px solid var(--border);letter-spacing:.04em;">Meet the Team &rarr;</a>
+  </div>
+</section>
+
+<div id="footer-mount"></div>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo"><div class="lar"><span class="la">A</span><span class="lr">R</span></div><div class="lname">Achievers Regal</div></div>
+    <h3>Admin Access</h3><p>Enter your password to manage content</p>
+    <input type="password" id="loginInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In &rarr;</button>
+    <div class="login-err" id="loginErr">Incorrect password. Please try again.</div>
+    <div style="margin-top:14px"><button onclick="document.getElementById('loginOverlay').classList.remove('open')" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button></div>
+  </div>
+</div>
+<div class="admin-overlay" id="adminOverlay" style="display:none"></div>
+
+<script src="_shared.js"></script>
+</body>
+</html>

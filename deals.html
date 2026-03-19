@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DealFlow Africa | Achievers Regal</title>
+<title>Deals | DealFlow Africa</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,71 +11,53 @@
 <div id="ticker-mount"></div>
 <div id="nav-mount"></div>
 
-<!-- HERO -->
-<div class="hero" style="padding:88px 5% 68px;position:relative;overflow:hidden;border-bottom:1px solid var(--border);">
-  <div style="content:'';position:absolute;top:-100px;right:-80px;width:520px;height:520px;background:radial-gradient(ellipse,rgba(201,168,76,.08) 0%,transparent 70%);pointer-events:none;"></div>
-  <div class="eyebrow">Africa Private Capital Intelligence</div>
-  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(36px,5.2vw,68px);font-weight:700;line-height:1.08;letter-spacing:-.01em;max-width:760px;margin-bottom:22px;">What <em style="font-style:italic;color:var(--gold)">capital</em> is<br>moving across Africa.</h1>
-  <p style="font-size:15px;color:var(--muted);max-width:540px;line-height:1.78;margin-bottom:0;">Tracking private equity, venture capital, and M&amp;A activity across the continent &mdash; providing deal intelligence, valuation benchmarks, and strategic insights for investors, operators, and advisors.</p>
-  <div class="cta-row">
-    <a href="deals.html" class="cta-card">
-      <div class="ico">&#128203;</div>
-      <div><div class="lbl">View Transaction Deals</div><div class="sub">26 deals tracked &middot; Updated Oct 2025</div></div>
-    </a>
-    <a href="insights.html" class="cta-card">
-      <div class="ico">&#128214;</div>
-      <div><div class="lbl">Read Insights</div><div class="sub">Market analysis &amp; commentary</div></div>
-    </a>
-    <a href="contact.html" class="cta-card">
-      <div class="ico">&#128275;</div>
-      <div><div class="lbl">Full Database Access</div><div class="sub">Expanded data &amp; analytics</div></div>
-    </a>
-  </div>
+<div class="page-header">
+  <div class="eyebrow">Transaction Database</div>
+  <h1>Deals in <em>Africa</em></h1>
+  <p>M&amp;A, private equity, and venture capital activity across the continent &mdash; tracked and curated by the Achievers Regal team. <a href="contact.html" style="color:var(--gold);text-decoration:none;">Get full access &rarr;</a></p>
 </div>
 
-<!-- STATS BAND -->
-<div class="stats-band">
-  <div class="stat-cell">
-    <div class="sl">Most Expensive Deal</div>
-    <div class="sv">$2.9B</div>
-    <div class="sd">MultiChoice Group &mdash; Canal+ &middot; South Africa</div>
+<section>
+  <div class="toolbar">
+    <div class="filters">
+      <button class="fbtn active" onclick="filterDeals('all',this)">All</button>
+      <button class="fbtn" onclick="filterDeals('South Africa',this)">South Africa</button>
+      <button class="fbtn" onclick="filterDeals('Egypt',this)">Egypt</button>
+      <button class="fbtn" onclick="filterDeals('Kenya',this)">Kenya</button>
+      <button class="fbtn" onclick="filterDeals('Morocco',this)">Morocco</button>
+      <button class="fbtn" onclick="filterDeals('other',this)">Other Markets</button>
+    </div>
+    <div class="srch">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search company, sector…" oninput="searchDeals()">
+    </div>
   </div>
-  <div class="stat-cell">
-    <div class="sl">Biggest Acquisition Stake</div>
-    <div class="sv">75&ndash;80%</div>
-    <div class="sd">Telecom Egypt &mdash; Helios Investment Partners</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Date</th>
+          <th>Target</th>
+          <th>Acquirer / Investor</th>
+          <th>Country</th>
+          <th>Sector</th>
+          <th style="text-align:right">Value ($M)</th>
+          <th style="text-align:center">Stake</th>
+        </tr>
+      </thead>
+      <tbody id="dealsBody"></tbody>
+    </table>
   </div>
-  <div class="stat-cell">
-    <div class="sl">Country with Most Deals</div>
-    <div class="sv">South Africa</div>
-    <div class="sd">11 transactions tracked &mdash; 42% of dataset</div>
+  <div class="tbl-footer">
+    <span class="cnt" id="dealCount">Showing 26 deals</span>
+    <a href="contact.html">Request full database access &rarr;</a>
   </div>
-</div>
-
-<!-- RECENT DEALS PREVIEW -->
-<section style="border-top:1px solid var(--border);">
-  <div class="sec-head">
-    <div class="sec-label">Latest Transactions</div>
-    <h2 class="sec-title">Recent Deals</h2>
-    <p class="sec-desc">A snapshot of the most recent M&amp;A, PE, and VC activity. <a href="deals.html" style="color:var(--gold);text-decoration:none;">View all 26 deals &rarr;</a></p>
-  </div>
-  <div id="recentDeals"></div>
-  <div style="margin-top:22px;"><a href="deals.html" style="display:inline-flex;align-items:center;gap:8px;color:var(--gold);font-size:13px;font-weight:500;text-decoration:none;border:1px solid var(--border);padding:10px 20px;border-radius:2px;transition:all .2s;" onmouseover="this.style.background='var(--gold-dim)'" onmouseout="this.style.background='transparent'">View Full Deal Database &rarr;</a></div>
-</section>
-
-<!-- INSIGHTS PREVIEW -->
-<section style="border-top:1px solid var(--border);background:linear-gradient(180deg,rgba(13,74,77,.2) 0%,transparent 100%);">
-  <div class="sec-head">
-    <div class="sec-label">News &amp; Insights</div>
-    <h2 class="sec-title">Latest Market Commentary</h2>
-    <p class="sec-desc">Deal analysis and macro themes shaping African private capital. <a href="insights.html" style="color:var(--gold);text-decoration:none;">View all insights &rarr;</a></p>
-  </div>
-  <div class="ins-grid" id="insightsPreview"></div>
 </section>
 
 <div id="footer-mount"></div>
 
-<!-- MODALS -->
+<!-- DEAL MODAL -->
 <div class="modal-bg" id="dealModal" onclick="if(event.target.id==='dealModal') this.classList.remove('open')">
   <div class="modal">
     <button class="mcl" onclick="document.getElementById('dealModal').classList.remove('open')">&#10005;</button>
@@ -92,6 +74,8 @@
     <div class="msum" id="m-sum"></div>
   </div>
 </div>
+
+<!-- LOGIN -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <div class="login-logo"><div class="lar"><span class="la">A</span><span class="lr">R</span></div><div class="lname">Achievers Regal</div></div>
@@ -102,6 +86,8 @@
     <div style="margin-top:14px"><button onclick="document.getElementById('loginOverlay').classList.remove('open')" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button></div>
   </div>
 </div>
+
+<!-- ADMIN PANEL -->
 <div class="admin-overlay" id="adminOverlay">
   <div class="admin-panel">
     <div class="admin-header"><div><h2>Admin Panel</h2><div class="ah-sub">DealFlow Africa &middot; Content Management</div></div><button class="admin-close" onclick="document.getElementById('adminOverlay').classList.remove('open')">&#10005;</button></div>
@@ -113,11 +99,11 @@
     </div>
     <div class="admin-body">
       <div class="admin-section active" id="deals-tab">
-        <div class="admin-note">Add a new transaction to the deals database.</div>
+        <div class="admin-note">Add a new transaction to the deals database. It will appear immediately in the table.</div>
         <div class="admin-form">
           <div class="admin-frow"><div class="af"><label>Target Company</label><input type="text" id="a-target" placeholder="e.g. MultiChoice Group"></div><div class="af"><label>Acquirer / Investor</label><input type="text" id="a-acquirer" placeholder="e.g. Canal+ S.A.S"></div></div>
           <div class="admin-frow"><div class="af"><label>Country</label><input type="text" id="a-country"></div><div class="af"><label>Sector</label><input type="text" id="a-sector"></div></div>
-          <div class="admin-frow"><div class="af"><label>Deal Value ($M)</label><input type="text" id="a-value" placeholder="e.g. 115 or Undisclosed"></div><div class="af"><label>Stake</label><input type="text" id="a-stake" placeholder="e.g. 30%"></div></div>
+          <div class="admin-frow"><div class="af"><label>Deal Value ($M)</label><input type="text" id="a-value" placeholder="e.g. 115 or Undisclosed"></div><div class="af"><label>Stake</label><input type="text" id="a-stake"></div></div>
           <div class="admin-frow"><div class="af"><label>Date</label><input type="date" id="a-date"></div><div class="af"><label>Logo URL</label><input type="text" id="a-logo" placeholder="https://..."></div></div>
           <div class="af"><label>Investment Summary</label><textarea id="a-summary"></textarea></div>
           <div class="admin-btn-row"><button class="a-submit" onclick="addDeal()">Add Deal &rarr;</button><button class="a-cancel" onclick="clearDealForm()">Clear</button></div>
@@ -130,7 +116,7 @@
           <div class="admin-frow"><div class="af"><label>Tag</label><input type="text" id="i-tag"></div><div class="af"><label>Type</label><select id="i-type"><option value="">Standard</option><option value="macro">Macro Analysis</option></select></div></div>
           <div class="af"><label>Title</label><input type="text" id="i-title"></div>
           <div class="af"><label>Blurb</label><textarea id="i-blurb"></textarea></div>
-          <div class="af"><label>URL</label><input type="text" id="i-url" placeholder="https://..."></div>
+          <div class="af"><label>URL</label><input type="text" id="i-url"></div>
           <div class="admin-btn-row"><button class="a-submit" onclick="addInsight()">Post Insight &rarr;</button><button class="a-cancel" onclick="clearInsightForm()">Clear</button></div>
         </div>
       </div>
@@ -141,10 +127,45 @@
 
 <script src="_shared.js"></script>
 <script>
+var curFilter='all', curSearch='';
+
 function logoHtml(d){
   if(d.logo) return '<img style="width:32px;height:32px;object-fit:contain;border-radius:4px;" src="'+d.logo+'" alt="'+d.target+'">';
   return '<div class="logo-fallback"><div class="ar-init"><span class="ar-a">A</span><span class="ar-r">R</span></div><div class="ar-name">Achievers Regal</div></div>';
 }
+function renderTable(){
+  var body=document.getElementById('dealsBody');
+  var filtered=DEALS.filter(function(d){
+    var mf=curFilter==='all'||d.country===curFilter||(curFilter==='other'&&['South Africa','Egypt','Kenya','Morocco'].indexOf(d.country)===-1);
+    var q=curSearch.toLowerCase();
+    var ms=!q||d.target.toLowerCase().indexOf(q)>-1||d.acquirer.toLowerCase().indexOf(q)>-1||d.sector.toLowerCase().indexOf(q)>-1||d.country.toLowerCase().indexOf(q)>-1;
+    return mf&&ms;
+  });
+  var html='';
+  filtered.forEach(function(d){
+    var idx=DEALS.indexOf(d);
+    var vc=d.valueNum?'known':'undisclosed';
+    html+='<tr onclick="openModal('+idx+')">';
+    html+='<td class="td-logo">'+logoHtml(d)+'</td>';
+    html+='<td class="td-date">'+d.date+'</td>';
+    html+='<td class="td-target">'+d.target+'</td>';
+    html+='<td class="td-acq">'+d.acquirer+'</td>';
+    html+='<td class="td-country"><span>'+d.country+'</span></td>';
+    html+='<td class="td-sector"><span>'+d.sector+'</span></td>';
+    html+='<td class="td-val '+vc+'">'+d.value+'</td>';
+    html+='<td class="td-stake">'+d.stake+'</td>';
+    html+='</tr>';
+  });
+  body.innerHTML=html;
+  document.getElementById('dealCount').textContent='Showing '+filtered.length+' deal'+(filtered.length!==1?'s':'');
+}
+function filterDeals(c,btn){
+  curFilter=c;
+  document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderTable();
+}
+function searchDeals(){curSearch=document.getElementById('searchInput').value;renderTable();}
 function openModal(i){
   var d=DEALS[i];
   document.getElementById('m-tag').textContent=d.sector+' · '+d.country;
@@ -158,39 +179,6 @@ function openModal(i){
   document.getElementById('m-sum').textContent=d.summary;
   document.getElementById('dealModal').classList.add('open');
 }
-// Render 5 most recent deals as cards
-var rb=document.getElementById('recentDeals');
-var html='<div class="tbl-wrap"><table><thead><tr><th></th><th>Date</th><th>Target</th><th>Acquirer</th><th>Country</th><th>Sector</th><th style="text-align:right">Value</th><th style="text-align:center">Stake</th></tr></thead><tbody>';
-DEALS.slice(0,5).forEach(function(d,i){
-  var vc=d.valueNum?'known':'undisclosed';
-  html+='<tr onclick="openModal('+i+')">';
-  html+='<td class="td-logo">'+logoHtml(d)+'</td>';
-  html+='<td class="td-date">'+d.date+'</td>';
-  html+='<td class="td-target">'+d.target+'</td>';
-  html+='<td class="td-acq">'+d.acquirer+'</td>';
-  html+='<td class="td-country"><span>'+d.country+'</span></td>';
-  html+='<td class="td-sector"><span>'+d.sector+'</span></td>';
-  html+='<td class="td-val '+vc+'">'+d.value+'</td>';
-  html+='<td class="td-stake">'+d.stake+'</td>';
-  html+='</tr>';
-});
-html+='</tbody></table></div>';
-rb.innerHTML=html;
-
-// Render 3 insights preview
-var ig=document.getElementById('insightsPreview');
-var ihtml='';
-INSIGHTS.slice(0,3).forEach(function(ins){
-  var mc=ins.type==='macro'?' macro':'';
-  ihtml+='<a href="insights.html" class="ins-card'+mc+'">';
-  ihtml+='<div class="ins-tag">'+ins.tag+'</div>';
-  ihtml+='<div class="ins-title">'+ins.title+'</div>';
-  ihtml+='<div class="ins-blurb">'+ins.blurb+'</div>';
-  ihtml+='<div class="ins-link">'+(ins.type==='macro'?'Read Analysis':'Read Insight')+'</div>';
-  ihtml+='</a>';
-});
-ig.innerHTML=ihtml;
-
 function switchTab(id,btn){
   document.querySelectorAll('.admin-section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.atab').forEach(function(t){t.classList.remove('active');});
@@ -205,7 +193,7 @@ function addDeal(){
   var vraw=document.getElementById('a-value').value.trim()||'Undisclosed';
   var vn=parseFloat(vraw.replace(/[^0-9.]/g,''))||null;
   DEALS.unshift({date:document.getElementById('a-date').value||new Date().toISOString().split('T')[0],target:t,acquirer:aq,country:document.getElementById('a-country').value.trim()||'Africa',sector:document.getElementById('a-sector').value.trim()||'—',value:vraw,valueNum:vn,stake:document.getElementById('a-stake').value.trim()||'—',summary:document.getElementById('a-summary').value.trim()||'',logo:document.getElementById('a-logo').value.trim()||''});
-  clearDealForm(); alert('Deal added!');
+  renderTable(); clearDealForm(); alert('Deal added!');
 }
 function clearDealForm(){['a-target','a-acquirer','a-country','a-sector','a-value','a-stake','a-date','a-logo','a-summary'].forEach(function(id){document.getElementById(id).value='';});}
 function addInsight(){
@@ -216,11 +204,11 @@ function addInsight(){
 }
 function clearInsightForm(){['i-tag','i-title','i-blurb','i-url'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('i-type').value='';}
 function renderManageLists(){
-  var dl=document.getElementById('manageDealsList');
-  dl.innerHTML=DEALS.map(function(d,i){return '<div class="admin-list-item"><div><div class="ali-name">'+d.target+'</div><div class="ali-meta">'+d.country+' · '+d.sector+' · '+d.value+'</div></div><div class="ali-actions"><button class="ali-del" onclick="if(confirm(\'Remove?\''+')){DEALS.splice('+i+',1);renderManageLists();}">&#10005; Remove</button></div></div>';}).join('');
-  var il=document.getElementById('manageInsightsList');
-  il.innerHTML=INSIGHTS.map(function(ins,i){return '<div class="admin-list-item"><div><div class="ali-name">'+ins.title+'</div><div class="ali-meta">'+ins.tag+'</div></div><div class="ali-actions"><button class="ali-del" onclick="if(confirm(\'Remove?\''+')){INSIGHTS.splice('+i+',1);renderManageLists();}">&#10005; Remove</button></div></div>';}).join('');
+  document.getElementById('manageDealsList').innerHTML=DEALS.map(function(d,i){return '<div class="admin-list-item"><div><div class="ali-name">'+d.target+'</div><div class="ali-meta">'+d.country+' · '+d.sector+' · '+d.value+'</div></div><div class="ali-actions"><button class="ali-del" onclick="DEALS.splice('+i+',1);renderTable();renderManageLists();">&#10005; Remove</button></div></div>';}).join('');
+  document.getElementById('manageInsightsList').innerHTML=INSIGHTS.map(function(ins,i){return '<div class="admin-list-item"><div><div class="ali-name">'+ins.title+'</div><div class="ali-meta">'+ins.tag+'</div></div><div class="ali-actions"><button class="ali-del" onclick="INSIGHTS.splice('+i+',1);renderManageLists();">&#10005; Remove</button></div></div>';}).join('');
 }
+
+renderTable();
 </script>
 </body>
 </html>

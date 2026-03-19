@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact | DealFlow Africa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="ticker-mount"></div>
+<div id="nav-mount"></div>
+
+<div class="page-header">
+  <div class="eyebrow">Contact &amp; Access</div>
+  <h1>Get Full <em>Database</em> Access</h1>
+  <p>Request access to the complete DealFlow Africa dataset, expanded analytics, and advisory services.</p>
+</div>
+
+<section>
+  <div class="contact-grid">
+    <div class="ci">
+      <p>We work with investors, fund managers, DFIs, and operators who need reliable, curated intelligence on African private capital markets. Reach out to discuss data access, advisory services, or partnerships.</p>
+      <div class="cd-list">
+        <div class="cd"><div class="cdi">&#9993;</div><div class="cdt"><a href="mailto:gkagure8@gmail.com">gkagure8@gmail.com</a> &mdash; Grace Kagure</div></div>
+        <div class="cd"><div class="cdi">&#9993;</div><div class="cdt"><a href="mailto:terrylberyl@gmail.com">terrylberyl@gmail.com</a> &mdash; Beryl Nyajuoga</div></div>
+        <div class="cd"><div class="cdi">&#9990;</div><div class="cdt"><a href="tel:+254717579383">+254 717 579 383</a></div></div>
+        <div class="cd"><div class="cdi">&#9990;</div><div class="cdt"><a href="tel:+254727262212">+254 727 262 212</a></div></div>
+        <div class="cd"><div class="cdi">&#128205;</div><div class="cdt">Nairobi, Kenya</div></div>
+      </div>
+
+      <!-- What you get -->
+      <div style="margin-top:36px;padding:22px;background:var(--card);border:1px solid var(--border-sub);border-radius:4px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">What you get</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="cred"><div class="cdot"></div><p style="font-size:13px;color:rgba(255,255,255,.65);">Full deal database with all undisclosed and disclosed transactions</p></div>
+          <div class="cred"><div class="cdot"></div><p style="font-size:13px;color:rgba(255,255,255,.65);">Valuation benchmarks and sector multiples</p></div>
+          <div class="cred"><div class="cdot"></div><p style="font-size:13px;color:rgba(255,255,255,.65);">Macro analysis and quarterly market reports</p></div>
+          <div class="cred"><div class="cdot"></div><p style="font-size:13px;color:rgba(255,255,255,.65);">Direct access to the Achievers Regal advisory team</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cf">
+      <div class="frow">
+        <div class="ff"><label>Full Name</label><input type="text" placeholder="Your name"></div>
+        <div class="ff"><label>Organisation</label><input type="text" placeholder="Fund / Company"></div>
+      </div>
+      <div class="ff"><label>Email</label><input type="email" placeholder="you@organisation.com"></div>
+      <div class="ff"><label>Phone (optional)</label><input type="tel" placeholder="+254 ..."></div>
+      <div class="ff">
+        <label>Interest</label>
+        <select>
+          <option value="">Select an option</option>
+          <option>Full Deal Database Access</option>
+          <option>Deal Advisory Services</option>
+          <option>Financial Modelling / Valuation</option>
+          <option>Strategic Advisory</option>
+          <option>Research Partnership</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="ff"><label>Message</label><textarea placeholder="Tell us about your needs…"></textarea></div>
+      <button class="sbtn" onclick="alert('Thank you for your enquiry. The Achievers Regal team will be in touch shortly.')">Send Enquiry &rarr;</button>
+    </div>
+  </div>
+</section>
+
+<div id="footer-mount"></div>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo"><div class="lar"><span class="la">A</span><span class="lr">R</span></div><div class="lname">Achievers Regal</div></div>
+    <h3>Admin Access</h3><p>Enter your password to manage content</p>
+    <input type="password" id="loginInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In &rarr;</button>
+    <div class="login-err" id="loginErr">Incorrect password. Please try again.</div>
+    <div style="margin-top:14px"><button onclick="document.getElementById('loginOverlay').classList.remove('open')" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button></div>
+  </div>
+</div>
+<div class="admin-overlay" id="adminOverlay" style="display:none"></div>
+
+<script src="_shared.js"></script>
+</body>
+</html>
