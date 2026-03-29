@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Capital Flow Intelligence | DealFlow Africa</title>
+<meta name="description" content="Where capital is moving across Africa — M&A, PE and VC deal flow analytics by country, sector and transaction type.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ─── CSS VARIABLES ─── */
+:root {
+  --green: #083335;
+  --gold: #C9A84C;
+  --gold-light: #d4b65e;
+  --gold-dim: rgba(201,168,76,.08);
+  --white: #ffffff;
+  --muted: rgba(255,255,255,.45);
+  --border: rgba(255,255,255,.06);
+  --border-sub: rgba(255,255,255,.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--green);
+  color: var(--white);
+  font-size: 14px;
+  overflow-x: hidden;
+}
+
+/* ─── LOADING ─── */
+.loading-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+}
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-overlay p {
+  font-size: 14px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .05em;
+}
+
+/* ─── PAGE CONTENT (hidden until data loads) ─── */
+.page-content { display: none; }
+.page-content.loaded { display: block; }
+
+/* ─── TICKER ─── */
+.ticker {
+  background: rgba(0,0,0,.25);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  white-space: nowrap;
+  animation: ticker 50s linear infinite;
+  padding-right: 48px;
+}
+.ticker-track span {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(255,255,255,.65);
+  letter-spacing: .04em;
+}
+.ticker-track span::before { content: '▲ '; color: var(--gold); }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── NAV (dark theme, replaces style.css if needed) ─── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  background: rgba(8,51,53,.95);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+}
+.logo-wrap { text-decoration: none; display: flex; flex-direction: column; }
+.l1 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--white); font-weight: 600; }
+.l2 { font-size: 14px; color: var(--muted); letter-spacing: .10em; text-transform: uppercase; margin-top: 1px; }
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-size: 18px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--white); background: rgba(255,255,255,.05); }
+.nav-links .active-page { color: var(--gold) !important; background: var(--gold-dim) !important; }
+.btn-cta {
+  background: var(--gold) !important;
+  color: var(--green) !important;
+  font-weight: 600 !important;
+  padding: 7px 16px !important;
+  border-radius: 2px !important;
+}
+.btn-cta:hover { background: var(--gold-light) !important; }
+
+/* ─── PAGE HEADER ─── */
+.page-header {
+  padding: 72px 80px 56px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(201,168,76,.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 16px;
+  max-width: 560px;
+}
+.page-header h1 em { color: var(--gold); font-style: italic; }
+.page-header p { font-size: 14px; color: var(--muted); line-height: 1.75; max-width: 520px; }
+
+/* ─── KPI STRIP ─── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-bottom: 1px solid var(--border);
+}
+.kpi {
+  padding: 28px 24px;
+  border-right: 1px solid var(--border);
+  animation: fadeUp .5s ease both;
+  position: relative;
+}
+.kpi:last-child { border-right: none; }
+.kpi:nth-child(2) { animation-delay: .06s; }
+.kpi:nth-child(3) { animation-delay: .10s; }
+.kpi:nth-child(4) { animation-delay: .14s; }
+.kpi:nth-child(5) { animation-delay: .17s; }
+.kpi:nth-child(6) { animation-delay: .20s; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kpi-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -.02em;
+}
+.kpi-label {
+  font-size: 14px;
+  color: var(--muted);
+  font-weight: 400;
+  line-height: 1.3;
+}
+.kpi-tag {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(201,168,76,.7);
+  background: var(--gold-dim);
+  border: 1px solid rgba(201,168,76,.15);
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: .04em;
+}
+
+/* ─── SECTION HEADERS ─── */
+.section-hd {
+  padding: 48px 80px 32px;
+}
+.section-hd .eyebrow { margin-bottom: 8px; }
+.section-hd h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--white);
+}
+
+/* ─── CHARTS GRID ─── */
+.charts-outer {
+  padding: 0 80px 0;
+}
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+.chart-panel {
+  background: var(--green);
+  padding: 36px 40px;
+  animation: fadeUp .5s ease both;
+  position: relative;
+}
+.chart-panel:nth-child(2) { animation-delay: .08s; }
+.chart-panel:nth-child(3) { animation-delay: .13s; }
+.chart-panel:nth-child(4) { animation-delay: .17s; }
+.chart-panel:nth-child(5) { animation-delay: .21s; }
+.chart-panel:nth-child(6) { animation-delay: .25s; }
+
+.panel-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.6);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.panel-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+.chart-wrap { position: relative; width: 100%; }
+.chart-wrap canvas { display: block; }
+
+/* ─── VALUATION MULTIPLES ─── */
+.valuation-section {
+  padding: 0 80px 48px;
+}
+.multiples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.multiple-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 20px;
+  transition: border-color .2s, background .2s;
+}
+.multiple-card:hover {
+  border-color: rgba(201,168,76,.3);
+  background: rgba(201,168,76,.04);
+}
+.mc-target {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.mc-sector {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.mc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mc-stat-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(255,255,255,.3);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.mc-stat-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gold);
+}
+.mc-stat-val.dim { color: var(--muted); }
+
+/* ─── TABLE SECTIONS ─── */
+.table-section {
+  padding: 0 80px 48px;
+}
+.tbl-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 24px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 3px;
+  width: fit-content;
+}
+.tab-btn {
+  padding: 7px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: .01em;
+}
+.tab-btn.active {
+  background: rgba(201,168,76,.12);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,.2);
+}
+.tab-btn:hover:not(.active) { color: var(--white); }
+
+.tbl-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead th {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  font-weight: 500;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+thead th.r { text-align: right; }
+thead th.c { text-align: center; }
+tbody tr {
+  border-bottom: 1px solid var(--border-sub);
+  transition: background .15s;
+}
+tbody tr:hover { background: rgba(255,255,255,.02); }
+tbody td {
+  padding: 14px 16px;
+  font-size: 14px;
+  vertical-align: middle;
+  color: var(--white);
+}
+tbody td.r { text-align: right; font-family: 'DM Mono', monospace; }
+tbody td.c { text-align: center; }
+tbody td.muted { color: var(--muted); }
+tbody td.gold { color: var(--gold); font-family: 'DM Mono', monospace; font-weight: 500; }
+
+.country-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  background: rgba(201,168,76,.08);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,.15);
+  white-space: nowrap;
+}
+
+.deal-bar-cell { width: 160px; }
+.deal-bar-track {
+  height: 4px;
+  background: rgba(255,255,255,.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.deal-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2a6b5a, var(--gold));
+  border-radius: 3px;
+  transition: width .8s cubic-bezier(.22,.68,0,1.2);
+}
+
+.sector-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 14px;
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.6);
+  border: 1px solid var(--border);
+}
+
+/* ─── TOP DEALS TABLE ─── */
+.rank-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(255,255,255,.25);
+  font-weight: 500;
+}
+.stake-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 14px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,.15);
+  font-family: 'DM Mono', monospace;
+}
+
+/* ─── NO-DATA NOTE ─── */
+.no-data-note {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted);
+  font-size: 14px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: rgba(0,0,0,.2);
+  border-top: 1px solid var(--border);
+  padding: 36px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.fb .f1 { font-family: 'Playfair Display', serif; color: var(--white); font-size: 15px; }
+.fb .f2 { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.flinks { display: flex; gap: 20px; flex-wrap: wrap; }
+.flinks a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .2s; }
+.flinks a:hover { color: var(--white); }
+.fcopy { font-size: 14px; color: rgba(255,255,255,.25); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+  .page-header { padding: 56px 40px 40px; }
+  .section-hd { padding: 40px 40px 24px; }
+  .charts-outer { padding: 0 40px; }
+  .table-section { padding: 0 40px 40px; }
+  .valuation-section { padding: 0 40px 40px; }
+  footer { padding: 28px 40px; }
+}
+@media (max-width: 800px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .page-header { padding: 40px 20px 32px; }
+  .section-hd { padding: 32px 20px 20px; }
+  .charts-outer { padding: 0 20px; }
+  .table-section { padding: 0 20px 32px; }
+  .valuation-section { padding: 0 20px 32px; }
+  footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+  nav { padding: 0 20px; }
+  .mobile-toggle { display: block; }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: rgba(8,51,53,.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px 20px;
+    gap: 4px;
+    z-index: 199;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links a { padding: 10px 12px; display: block; }
+}
+@media (max-width: 480px) {
+  .kpi-strip { grid-template-columns: 1fr 1fr; }
+  .kpi-num { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── TICKER ─── -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span>Loading latest deals&hellip;</span>
+  </div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="index.html" class="logo-wrap">
+    <div class="l1">DealFlow Africa</div>
+    <div class="l2">by Achievers Regal</div>
+  </a>
+  <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="deals.html">Deals</a></li>
+    <li><a href="capital-flow.html" class="active-page">Capital Flow</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="contact.html" class="btn-cta">Get Access</a></li>
+  </ul>
+</nav>
+
+<!-- ─── LOADING ─── -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p>Loading capital flow data&hellip;</p>
+</div>
+
+<!-- ─── PAGE CONTENT ─── -->
+<div class="page-content" id="pageContent">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="eyebrow">Capital Flow Intelligence</div>
+    <h1>Where <em>Capital</em> is Moving</h1>
+    <p id="headerSubtitle">Analysing deal flow across African markets.</p>
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-num" id="kpiTotalDeals">—</div>
+      <div class="kpi-label">Total Deals</div>
+      <div class="kpi-tag" id="kpiDateRange">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" id="kpiMarkets">—</div>
+      <div class="kpi-label">Active Markets</div>
+      <div class="kpi-tag">Countries</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" id="kpiDisclosed">—</div>
+      <div class="kpi-label">Disclosed Deal Value</div>
+      <div class="kpi-tag">Minimum (excl. undisclosed)</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" id="kpiTopMarket">—</div>
+      <div class="kpi-label">Top Market</div>
+      <div class="kpi-tag" id="kpiTopMarketPct">—</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" id="kpiAvgDeal">—</div>
+      <div class="kpi-label">Average Deal Size</div>
+      <div class="kpi-tag">Disclosed only</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-num" id="kpiMedianDeal">—</div>
+      <div class="kpi-label">Median Deal Size</div>
+      <div class="kpi-tag">Disclosed only</div>
+    </div>
+  </div>
+
+  <!-- CHARTS SECTION -->
+  <div class="section-hd">
+    <div class="eyebrow">Analytics</div>
+    <h2>Deal Flow Charts</h2>
+  </div>
+
+  <div class="charts-outer">
+    <div class="charts-grid">
+
+      <!-- Chart 1: Deals by Country (horizontal bar) -->
+      <div class="chart-panel">
+        <div class="panel-label">Deal Distribution</div>
+        <div class="panel-title">Deals by Country</div>
+        <div class="panel-sub">Transaction count per market, sorted by volume</div>
+        <div class="chart-wrap" style="height:300px;">
+          <canvas id="chartCountryBar"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Deal Share by Market (doughnut) -->
+      <div class="chart-panel">
+        <div class="panel-label">Market Concentration</div>
+        <div class="panel-title">Deal Share by Market</div>
+        <div class="panel-sub">Proportion of total tracked deals by country</div>
+        <div class="chart-wrap" style="height:300px;">
+          <canvas id="chartMarketDoughnut"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 3: Disclosed Value by Country (vertical bar) -->
+      <div class="chart-panel">
+        <div class="panel-label">Capital Volume</div>
+        <div class="panel-title">Disclosed Deal Value by Country</div>
+        <div class="panel-sub">USD millions · disclosed transactions only</div>
+        <div class="chart-wrap" style="height:280px;">
+          <canvas id="chartValueByCountry"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Transaction Types -->
+      <div class="chart-panel">
+        <div class="panel-label">Deal Structure</div>
+        <div class="panel-title">Transaction Types</div>
+        <div class="panel-sub">Distribution of deal structures across all markets</div>
+        <div class="chart-wrap" style="height:280px;">
+          <canvas id="chartTxnTypes"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 5: Deals by Sector (horizontal bar) -->
+      <div class="chart-panel">
+        <div class="panel-label">Sector Activity</div>
+        <div class="panel-title">Deals by Sector</div>
+        <div class="panel-sub">Top 12 sectors by transaction count</div>
+        <div class="chart-wrap" style="height:340px;">
+          <canvas id="chartSectorBar"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 6: Monthly Timeline -->
+      <div class="chart-panel">
+        <div class="panel-label">Temporal Trends</div>
+        <div class="panel-title">Monthly Deal Timeline</div>
+        <div class="panel-sub">Transaction volume over time</div>
+        <div class="chart-wrap" style="height:340px;">
+          <canvas id="chartTimeline"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- VALUATION MULTIPLES SECTION -->
+  <div class="valuation-section" id="valuationSection" style="display:none;">
+    <div class="section-hd" style="padding:48px 0 24px;">
+      <div class="eyebrow">Benchmarks</div>
+      <h2>Valuation Multiples</h2>
+    </div>
+    <div class="multiples-grid" id="multiplesGrid"></div>
+  </div>
+
+  <!-- COUNTRY BREAKDOWN TABLE -->
+  <div class="table-section">
+    <div class="section-hd" style="padding:48px 0 8px;">
+      <div class="eyebrow">Country Breakdown</div>
+      <h2>Deals by Market</h2>
+    </div>
+    <div class="tbl-tabs">
+      <button class="tab-btn active" onclick="sortCountryTable('count', this)">By Deal Count</button>
+      <button class="tab-btn" onclick="sortCountryTable('value', this)">By Value</button>
+      <button class="tab-btn" onclick="sortCountryTable('alpha', this)">A&ndash;Z</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th>Notable Deal</th>
+            <th class="r">Deals</th>
+            <th>Activity</th>
+            <th class="r">Largest Value</th>
+            <th class="r">Sectors</th>
+          </tr>
+        </thead>
+        <tbody id="countryTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TOP DEALS TABLE -->
+  <div class="table-section">
+    <div class="section-hd" style="padding:48px 0 24px;">
+      <div class="eyebrow">Deal Intelligence</div>
+      <h2>Top 10 Deals by Value</h2>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:32px;">#</th>
+            <th>Target</th>
+            <th>Acquirer / Investors</th>
+            <th>Country</th>
+            <th>Sector</th>
+            <th class="r">Deal Value</th>
+            <th class="c">Stake</th>
+          </tr>
+        </thead>
+        <tbody id="topDealsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page-content -->
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="fb">
+    <div class="f1">DealFlow Africa</div>
+    <div class="f2">by Achievers Regal &middot; Nairobi, Kenya</div>
+  </div>
+  <div class="flinks">
+    <a href="deals.html">Deals</a>
+    <a href="capital-flow.html">Capital Flow</a>
+    <a href="insights.html">Insights</a>
+    <a href="about.html">About</a>
+    <a href="team.html">Team</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <div class="fcopy">&copy; 2025 Achievers Regal. All rights reserved.</div>
+</footer>
+
+<!-- ─── SCRIPTS ─── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════
+   CONFIGURATION
+═══════════════════════════════════════════════════════ */
+var SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoodUG0hcux9GxoqYAm8E3pByMCm0MaP8-gFDGMywa5e8pN8L0YHhVBw4YAPYhtvCdGByRkIuTcLzG/pub?gid=0&single=true&output=csv';
+
+/* palette */
+var C = {
+  gold: '#C9A84C',
+  goldLight: '#d4b65e',
+  goldDim: 'rgba(201,168,76,0.08)',
+  green1: '#083335',
+  green2: '#0f4d50',
+  green3: '#1a6b6e',
+  green4: '#2a8a8e',
+  teal1: '#1e7a7e',
+  teal2: '#3aafb4',
+  muted: 'rgba(255,255,255,0.45)',
+  border: 'rgba(255,255,255,0.06)',
+  white: '#ffffff'
+};
+
+/* distinct categorical colors for sector/txn charts */
+var CAT_COLORS = [
+  '#C9A84C','#2a8a8e','#e08d3c','#5da89e','#b5883c',
+  '#3aafb4','#9a7030','#1e7a7e','#d4b65e','#4d9ea2',
+  '#7a5a24','#6bbec4'
+];
+
+/* ═══════════════════════════════════════════════════════
+   CHART.JS GLOBAL DEFAULTS  (all 14px minimum)
+═══════════════════════════════════════════════════════ */
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 14;
+Chart.defaults.color = 'rgba(255,255,255,0.55)';
+Chart.defaults.plugins.legend.labels.boxWidth = 10;
+Chart.defaults.plugins.legend.labels.padding = 14;
+Chart.defaults.plugins.legend.labels.font = { size: 14 };
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(4,28,30,0.96)';
+Chart.defaults.plugins.tooltip.titleColor = '#ffffff';
+Chart.defaults.plugins.tooltip.bodyColor = 'rgba(255,255,255,0.75)';
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.plugins.tooltip.cornerRadius = 3;
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(201,168,76,0.25)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.titleFont = { family: "'DM Mono', monospace", size: 14 };
+Chart.defaults.plugins.tooltip.bodyFont = { family: "'DM Sans', sans-serif", size: 14 };
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+function fmtVal(num) {
+  if (num === null || num === undefined || isNaN(num)) return null;
+  if (num >= 1000) return '$' + (num / 1000).toFixed(1) + 'B';
+  return '$' + num.toFixed(0) + 'M';
+}
+function fmtValLong(num) {
+  if (num === null || num === undefined || isNaN(num)) return 'Undisclosed';
+  if (num >= 1000) return '$' + (num / 1000).toFixed(2) + 'B';
+  return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 }) + 'M';
+}
+function fmtKpi(num) {
+  if (num === null || isNaN(num)) return '—';
+  if (num >= 1000) return '$' + (num / 1000).toFixed(1) + 'B+';
+  return '$' + Math.round(num) + 'M';
+}
+function median(arr) {
+  if (!arr.length) return null;
+  var s = arr.slice().sort(function(a, b){ return a - b; });
+  var m = Math.floor(s.length / 2);
+  return s.length % 2 !== 0 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+function parseDate(str) {
+  if (!str || str === '—') return null;
+  /* formats: DD-Mon-YY, DD-Mon-YYYY, YYYY-MM-DD */
+  var d = new Date(str);
+  if (!isNaN(d.getTime())) return d;
+  /* try DD-Mon-YY (e.g. 05-Jan-26) */
+  var m = str.match(/^(\d{2})-([A-Za-z]{3})-(\d{2,4})$/);
+  if (m) {
+    var yr = parseInt(m[3]);
+    if (yr < 100) yr += 2000;
+    return new Date(m[2] + ' ' + m[1] + ' ' + yr);
+  }
+  return null;
+}
+function countUniq(arr) {
+  var s = {}; arr.forEach(function(v){ if (v) s[v] = 1; });
+  return Object.keys(s);
+}
+function groupBy(arr, key) {
+  var r = {};
+  arr.forEach(function(d) {
+    var k = d[key] || '—';
+    if (!r[k]) r[k] = [];
+    r[k].push(d);
+  });
+  return r;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ROW MAPPER
+═══════════════════════════════════════════════════════ */
+function mapRow(row) {
+  var keys = Object.keys(row);
+  function g(candidates) {
+    for (var i = 0; i < candidates.length; i++)
+      for (var j = 0; j < keys.length; j++)
+        if (keys[j].toLowerCase().trim() === candidates[i].toLowerCase())
+          return (row[keys[j]] || '').trim();
+    return '';
+  }
+  var target = g(['target','target company','company','target name']);
+  if (!target) return null;
+
+  var valStr = g(['deal value ($ million)','deal value','value ($m)','deal value ($m)','amount','size ($m)']);
+  var valNum = null;
+  if (valStr && valStr !== '' && valStr !== '-' && valStr !== '—' && valStr.toLowerCase() !== 'undisclosed') {
+    var n = parseFloat(valStr.replace(/[$,\s]/gi, ''));
+    if (!isNaN(n)) {
+      if (valStr.toUpperCase().indexOf('B') > -1 && n < 1000) n *= 1000;
+      valNum = n;
+    }
+  }
+
+  var salesStr = g(['sales ($ million)','sales ($m)','sales','revenue ($m)','revenue']);
+  var salesNum = null;
+  if (salesStr && salesStr !== '' && salesStr !== '-' && salesStr !== '—') {
+    var sn = parseFloat(salesStr.replace(/[$,\s]/gi, ''));
+    if (!isNaN(sn)) salesNum = sn;
+  }
+
+  var evSales = g(['ev/sales multiple','ev/sales','ev / sales multiple','ev / sales']);
+  var evSalesNum = null;
+  if (evSales && evSales !== '' && evSales !== '—') {
+    var en = parseFloat(evSales);
+    if (!isNaN(en)) evSalesNum = en;
+  }
+
+  var evEbitda = g(['ev/ebitda multiple','ev/ebitda','ev / ebitda multiple','ev / ebitda']);
+  var evEbitdaNum = null;
+  if (evEbitda && evEbitda !== '' && evEbitda !== '—') {
+    var ee = parseFloat(evEbitda);
+    if (!isNaN(ee)) evEbitdaNum = ee;
+  }
+
+  var dateStr = g(['announced date','date','announced','deal date']);
+  var dateObj = parseDate(dateStr);
+
+  return {
+    date:       dateStr || '—',
+    dateObj:    dateObj,
+    txnType:    g(['transaction type','transaction_type','type','deal type']) || '—',
+    target:     target,
+    acquirer:   g(['acquirer/ investors','acquirer/investors','acquirer / investors','acquirer','acquirer / investor','buyer','investor']) || '—',
+    country:    g(['country','market','geography','location']) || '—',
+    sector:     g(['sector','industry']) || '—',
+    summary:    g(['investment summary','summary','description','notes','deal summary']) || '',
+    valueStr:   valStr || 'Undisclosed',
+    valueNum:   valNum,
+    stake:      g(['stake','% stake','ownership','equity stake','interest']) || '—',
+    salesNum:   salesNum,
+    evSalesNum: evSalesNum,
+    evEbitdaNum: evEbitdaNum
+  };
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN INIT
+═══════════════════════════════════════════════════════ */
+var ALL_DEALS = [];
+var COUNTRY_DATA = [];
+
+function init() {
+  Papa.parse(SHEET_CSV, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      ALL_DEALS = [];
+      results.data.forEach(function(row) {
+        var m = mapRow(row);
+        if (m) ALL_DEALS.push(m);
+      });
+
+      if (ALL_DEALS.length === 0) {
+        document.getElementById('loadingOverlay').innerHTML =
+          '<p style="color:var(--muted);font-size:14px;">No data found. Please check the Google Sheet is published correctly.</p>';
+        return;
+      }
+
+      buildPage();
+    },
+    error: function() {
+      document.getElementById('loadingOverlay').innerHTML =
+        '<p style="color:var(--muted);font-size:14px;">Could not load data. <a href="javascript:location.reload()" style="color:var(--gold);">Refresh</a></p>';
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   BUILD PAGE
+═══════════════════════════════════════════════════════ */
+function buildPage() {
+  buildTicker();
+  buildKpis();
+  buildCountryData();
+  buildCharts();
+  buildValuationSection();
+  buildCountryTable();
+  buildTopDeals();
+
+  document.getElementById('loadingOverlay').style.display = 'none';
+  document.getElementById('pageContent').classList.add('loaded');
+}
+
+/* ─── TICKER ─── */
+function buildTicker() {
+  var disclosed = ALL_DEALS.filter(function(d){ return d.valueNum; });
+  disclosed.sort(function(a, b){ return b.valueNum - a.valueNum; });
+  var top = disclosed.slice(0, 8);
+  if (top.length === 0) top = ALL_DEALS.slice(0, 8);
+
+  var items = top.concat(top).map(function(d) {
+    var val = d.valueNum ? ' &middot; ' + fmtValLong(d.valueNum) : '';
+    return '<span>' + escHtml(d.target) + ' / ' + escHtml(d.acquirer.split('\n')[0]) + val + ' &middot; ' + escHtml(d.country) + '</span>';
+  }).join('');
+
+  document.getElementById('tickerTrack').innerHTML = items;
+}
+
+/* ─── KPIs ─── */
+function buildKpis() {
+  var total = ALL_DEALS.length;
+
+  /* date range */
+  var datesWithObj = ALL_DEALS.filter(function(d){ return d.dateObj; });
+  var dateRange = '—';
+  if (datesWithObj.length) {
+    var sorted = datesWithObj.slice().sort(function(a, b){ return a.dateObj - b.dateObj; });
+    var earliest = sorted[0].dateObj;
+    var latest   = sorted[sorted.length - 1].dateObj;
+    var fmtD = function(d){ return d.toLocaleString('en-GB', { month: 'short', year: 'numeric' }); };
+    dateRange = fmtD(earliest) + ' – ' + fmtD(latest);
+  }
+
+  var markets = countUniq(ALL_DEALS.map(function(d){ return d.country; })).length;
+
+  var disclosedVals = ALL_DEALS.filter(function(d){ return d.valueNum; }).map(function(d){ return d.valueNum; });
+  var totalVal = disclosedVals.reduce(function(s, v){ return s + v; }, 0);
+  var avgDeal  = disclosedVals.length ? totalVal / disclosedVals.length : null;
+  var medDeal  = median(disclosedVals);
+
+  /* top market */
+  var byCountry = groupBy(ALL_DEALS, 'country');
+  var topCountry = null, topCount = 0;
+  Object.keys(byCountry).forEach(function(c) {
+    if (byCountry[c].length > topCount) { topCount = byCountry[c].length; topCountry = c; }
+  });
+  var topPct = total ? Math.round(topCount / total * 100) : 0;
+
+  document.getElementById('kpiTotalDeals').textContent = total;
+  document.getElementById('kpiDateRange').textContent = dateRange;
+  document.getElementById('kpiMarkets').textContent = markets;
+  document.getElementById('kpiDisclosed').textContent = totalVal >= 1000
+    ? '$' + (totalVal / 1000).toFixed(1) + 'B+'
+    : '$' + Math.round(totalVal) + 'M+';
+  document.getElementById('kpiTopMarket').textContent = topCountry || '—';
+  document.getElementById('kpiTopMarketPct').textContent = topPct + '% of all deals';
+  document.getElementById('kpiAvgDeal').textContent = avgDeal ? fmtKpi(avgDeal).replace('+','') : '—';
+  document.getElementById('kpiMedianDeal').textContent = medDeal ? fmtKpi(medDeal).replace('+','') : '—';
+
+  /* header subtitle */
+  document.getElementById('headerSubtitle').textContent =
+    'Analysing ' + total + ' tracked transactions across ' + markets + ' markets' +
+    (dateRange !== '—' ? ' (' + dateRange + ')' : '') + '.';
+}
+
+/* ─── COUNTRY DATA BUILD ─── */
+function buildCountryData() {
+  var byCountry = groupBy(ALL_DEALS, 'country');
+  COUNTRY_DATA = Object.keys(byCountry).map(function(c) {
+    var deals = byCountry[c];
+    var disclosed = deals.filter(function(d){ return d.valueNum; });
+    var totalVal = disclosed.reduce(function(s, d){ return s + d.valueNum; }, 0);
+    var maxDeal = disclosed.length ? disclosed.reduce(function(a, b){ return a.valueNum > b.valueNum ? a : b; }) : null;
+    var sectors = countUniq(deals.map(function(d){ return d.sector; }));
+    return {
+      name:     c,
+      count:    deals.length,
+      totalVal: disclosed.length ? totalVal : null,
+      maxVal:   maxDeal ? maxDeal.valueNum : null,
+      notable:  maxDeal ? maxDeal.target : deals[0].target,
+      sectors:  sectors.length
+    };
+  });
+  COUNTRY_DATA.sort(function(a, b){ return b.count - a.count; });
+}
+
+/* ═══════════════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════════════ */
+function buildCharts() {
+  buildChartCountryBar();
+  buildChartMarketDoughnut();
+  buildChartValueByCountry();
+  buildChartTxnTypes();
+  buildChartSectorBar();
+  buildChartTimeline();
+}
+
+var TICK_FONT = { family: "'DM Mono', monospace", size: 14 };
+var GRID_COLOR = 'rgba(255,255,255,0.05)';
+
+/* Chart 1 – Deals by Country (horizontal bar) */
+function buildChartCountryBar() {
+  var data = COUNTRY_DATA.slice(0, 15); /* top 15 */
+  var labels = data.map(function(d){ return d.name; });
+  var counts = data.map(function(d){ return d.count; });
+  var bgColors = data.map(function(d, i) {
+    if (i === 0) return '#1e7a7e';
+    if (i === 1) return '#2a8a8e';
+    if (i === 2) return '#3aafb4';
+    return 'rgba(201,168,76,0.2)';
+  });
+
+  new Chart(document.getElementById('chartCountryBar'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Deals',
+        data: counts,
+        backgroundColor: bgColors,
+        borderColor: 'transparent',
+        borderRadius: 3,
+        barThickness: 16
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return '  ' + ctx.raw + ' deal' + (ctx.raw !== 1 ? 's' : '');
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: GRID_COLOR },
+          border: { display: false },
+          ticks: { font: TICK_FONT, stepSize: 2 }
+        },
+        y: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { size: 14 }, padding: 4 }
+        }
+      }
+    }
+  });
+}
+
+/* Chart 2 – Deal Share Doughnut */
+function buildChartMarketDoughnut() {
+  var top8 = COUNTRY_DATA.slice(0, 8);
+  var otherCount = COUNTRY_DATA.slice(8).reduce(function(s, d){ return s + d.count; }, 0);
+  var labels = top8.map(function(d){ return d.name; });
+  var counts = top8.map(function(d){ return d.count; });
+  if (otherCount > 0) { labels.push('Other'); counts.push(otherCount); }
+  var total = ALL_DEALS.length;
+
+  var colors = [
+    '#1e7a7e','#C9A84C','#2a8a8e','#e08d3c','#3aafb4',
+    '#b5883c','#5da89e','#d4b65e','rgba(255,255,255,0.15)'
+  ];
+
+  new Chart(document.getElementById('chartMarketDoughnut'), {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: counts,
+        backgroundColor: colors,
+        borderColor: 'rgba(8,51,53,0.8)',
+        borderWidth: 2,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            font: { size: 14 },
+            padding: 12,
+            boxWidth: 10,
+            color: 'rgba(255,255,255,0.7)'
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              var pct = Math.round(ctx.raw / total * 100);
+              return '  ' + ctx.raw + ' deal' + (ctx.raw !== 1 ? 's' : '') + ' (' + pct + '%)';
+            }
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'centerText',
+      afterDraw: function(chart) {
+        var ctx = chart.ctx;
+        var ca = chart.chartArea;
+        var cx = (ca.left + ca.right) / 2;
+        var cy = (ca.top + ca.bottom) / 2;
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#C9A84C';
+        ctx.font = "600 26px 'DM Mono', monospace";
+        ctx.fillText(total, cx, cy - 10);
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.font = "14px 'DM Sans', sans-serif";
+        ctx.fillText('deals', cx, cy + 13);
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+/* Chart 3 – Disclosed Value by Country (vertical bar) */
+function buildChartValueByCountry() {
+  var withVal = COUNTRY_DATA.filter(function(d){ return d.totalVal; });
+  withVal.sort(function(a, b){ return b.totalVal - a.totalVal; });
+  var labels = withVal.map(function(d){ return d.name; });
+  var vals   = withVal.map(function(d){ return d.totalVal; });
+  var maxV   = vals.length ? Math.max.apply(null, vals) : 1;
+
+  var bgColors = vals.map(function(v) {
+    var ratio = v / maxV;
+    if (ratio > 0.7) return '#1e7a7e';
+    if (ratio > 0.35) return '#2a8a8e';
+    return '#C9A84C';
+  });
+
+  new Chart(document.getElementById('chartValueByCountry'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Disclosed Value ($M)',
+        data: vals,
+        backgroundColor: bgColors,
+        borderColor: 'transparent',
+        borderRadius: 3,
+        barThickness: 28
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return '  ' + fmtValLong(ctx.raw);
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { size: 14 }, color: 'rgba(255,255,255,0.55)' }
+        },
+        y: {
+          grid: { color: GRID_COLOR },
+          border: { display: false },
+          ticks: {
+            font: TICK_FONT,
+            callback: function(v) {
+              return v >= 1000 ? '$' + (v/1000).toFixed(1) + 'B' : '$' + v + 'M';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+/* Chart 4 – Transaction Types */
+function buildChartTxnTypes() {
+  var byType = groupBy(ALL_DEALS.filter(function(d){ return d.txnType && d.txnType !== '—'; }), 'txnType');
+  var types = Object.keys(byType).map(function(t) {
+    return { name: t, count: byType[t].length };
+  });
+  types.sort(function(a, b){ return b.count - a.count; });
+
+  var labels = types.map(function(t){ return t.name; });
+  var counts = types.map(function(t){ return t.count; });
+  var total  = counts.reduce(function(s, v){ return s + v; }, 0);
+
+  new Chart(document.getElementById('chartTxnTypes'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Deals',
+        data: counts,
+        backgroundColor: types.map(function(_, i){ return CAT_COLORS[i % CAT_COLORS.length]; }),
+        borderColor: 'transparent',
+        borderRadius: 3,
+        barThickness: 20
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              var pct = Math.round(ctx.raw / total * 100);
+              return '  ' + ctx.raw + ' deal' + (ctx.raw !== 1 ? 's' : '') + ' (' + pct + '%)';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: GRID_COLOR },
+          border: { display: false },
+          ticks: { font: TICK_FONT }
+        },
+        y: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { size: 14 }, padding: 4 }
+        }
+      }
+    }
+  });
+}
+
+/* Chart 5 – Deals by Sector (horizontal bar, top 12) */
+function buildChartSectorBar() {
+  var bySector = groupBy(ALL_DEALS, 'sector');
+  var sectors = Object.keys(bySector).map(function(s) {
+    return { name: s, count: bySector[s].length };
+  });
+  sectors.sort(function(a, b){ return b.count - a.count; });
+  var top12 = sectors.slice(0, 12);
+
+  var labels = top12.map(function(s){ return s.name; });
+  var counts = top12.map(function(s){ return s.count; });
+
+  new Chart(document.getElementById('chartSectorBar'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Deals',
+        data: counts,
+        backgroundColor: top12.map(function(_, i){ return CAT_COLORS[i % CAT_COLORS.length]; }),
+        borderColor: 'transparent',
+        borderRadius: 3,
+        barThickness: 16
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return '  ' + ctx.raw + ' deal' + (ctx.raw !== 1 ? 's' : '');
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: GRID_COLOR },
+          border: { display: false },
+          ticks: { font: TICK_FONT, stepSize: 1 }
+        },
+        y: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { font: { size: 14 }, padding: 4 }
+        }
+      }
+    }
+  });
+}
+
+/* Chart 6 – Monthly Timeline */
+function buildChartTimeline() {
+  /* gather dates */
+  var withDate = ALL_DEALS.filter(function(d){ return d.dateObj; });
+  if (!withDate.length) {
+    document.getElementById('chartTimeline').closest('.chart-panel').innerHTML +=
+      '<p class="no-data-note">No date data available for timeline.</p>';
+    return;
+  }
+
+  /* bucket by YYYY-MM */
+  var buckets = {};
+  withDate.forEach(function(d) {
+    var yr = d.dateObj.getFullYear();
+    var mo = d.dateObj.getMonth() + 1;
+    var key = yr + '-' + (mo < 10 ? '0' : '') + mo;
+    if (!buckets[key]) buckets[key] = 0;
+    buckets[key]++;
+  });
+
+  var keys = Object.keys(buckets).sort();
+  var labels = keys.map(function(k) {
+    var parts = k.split('-');
+    var d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
+    return d.toLocaleString('en-GB', { month: 'short', year: '2-digit' });
+  });
+  var counts = keys.map(function(k){ return buckets[k]; });
+
+  new Chart(document.getElementById('chartTimeline'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Deals',
+        data: counts,
+        backgroundColor: 'rgba(201,168,76,0.45)',
+        borderColor: '#C9A84C',
+        borderWidth: 1,
+        borderRadius: 3,
+        hoverBackgroundColor: '#C9A84C'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return '  ' + ctx.raw + ' deal' + (ctx.raw !== 1 ? 's' : '');
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: {
+            font: TICK_FONT,
+            maxRotation: 45,
+            color: 'rgba(255,255,255,0.45)'
+          }
+        },
+        y: {
+          grid: { color: GRID_COLOR },
+          border: { display: false },
+          ticks: { font: TICK_FONT, stepSize: 1 }
+        }
+      }
+    }
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   VALUATION MULTIPLES SECTION
+═══════════════════════════════════════════════════════ */
+function buildValuationSection() {
+  var withMultiples = ALL_DEALS.filter(function(d) {
+    return d.evSalesNum !== null || d.evEbitdaNum !== null;
+  });
+  if (!withMultiples.length) return;
+
+  document.getElementById('valuationSection').style.display = 'block';
+  var grid = document.getElementById('multiplesGrid');
+
+  grid.innerHTML = withMultiples.map(function(d) {
+    return '<div class="multiple-card">' +
+      '<div class="mc-target">' + escHtml(d.target) + '</div>' +
+      '<div class="mc-sector">' + escHtml(d.sector) + ' &middot; ' + escHtml(d.country) + '</div>' +
+      '<div class="mc-stats">' +
+        '<div>' +
+          '<div class="mc-stat-lbl">Deal Value</div>' +
+          '<div class="mc-stat-val' + (d.valueNum ? '' : ' dim') + '">' +
+            (d.valueNum ? fmtValLong(d.valueNum) : 'Undiscl.') +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="mc-stat-lbl">Sales</div>' +
+          '<div class="mc-stat-val' + (d.salesNum ? '' : ' dim') + '">' +
+            (d.salesNum ? fmtValLong(d.salesNum) : '—') +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="mc-stat-lbl">EV/Sales</div>' +
+          '<div class="mc-stat-val' + (d.evSalesNum !== null ? '' : ' dim') + '">' +
+            (d.evSalesNum !== null ? d.evSalesNum.toFixed(2) + 'x' : '—') +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="mc-stat-lbl">EV/EBITDA</div>' +
+          '<div class="mc-stat-val' + (d.evEbitdaNum !== null ? '' : ' dim') + '">' +
+            (d.evEbitdaNum !== null ? d.evEbitdaNum.toFixed(1) + 'x' : '—') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   COUNTRY BREAKDOWN TABLE
+═══════════════════════════════════════════════════════ */
+var countryTableMode = 'count';
+function sortCountryTable(mode, btn) {
+  document.querySelectorAll('.tbl-tabs .tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  countryTableMode = mode;
+  renderCountryTable();
+}
+
+function renderCountryTable() {
+  var sorted = COUNTRY_DATA.slice();
+  if (countryTableMode === 'count') sorted.sort(function(a, b){ return b.count - a.count; });
+  else if (countryTableMode === 'value') sorted.sort(function(a, b){ return (b.totalVal || 0) - (a.totalVal || 0); });
+  else sorted.sort(function(a, b){ return a.name.localeCompare(b.name); });
+
+  var maxCount = sorted.length ? sorted.reduce(function(m, d){ return Math.max(m, d.count); }, 0) : 1;
+
+  document.getElementById('countryTableBody').innerHTML = sorted.map(function(d) {
+    var pct = Math.round(d.count / maxCount * 100);
+    var valHtml = d.maxVal !== null
+      ? '<span style="color:var(--gold);font-family:\'DM Mono\',monospace;">' + fmtValLong(d.maxVal) + '</span>'
+      : '<span style="color:var(--muted);">Undisclosed</span>';
+    return '<tr>' +
+      '<td><span class="country-badge">' + escHtml(d.name) + '</span></td>' +
+      '<td style="color:rgba(255,255,255,0.7);font-size:14px;">' + escHtml(d.notable) + '</td>' +
+      '<td class="r">' + d.count + '</td>' +
+      '<td class="deal-bar-cell">' +
+        '<div class="deal-bar-track">' +
+          '<div class="deal-bar-fill" style="width:' + pct + '%"></div>' +
+        '</div>' +
+      '</td>' +
+      '<td class="r">' + valHtml + '</td>' +
+      '<td class="r muted">' + d.sectors + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function buildCountryTable() {
+  renderCountryTable();
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOP DEALS TABLE
+═══════════════════════════════════════════════════════ */
+function buildTopDeals() {
+  var withVal = ALL_DEALS.filter(function(d){ return d.valueNum; });
+  withVal.sort(function(a, b){ return b.valueNum - a.valueNum; });
+  var top10 = withVal.slice(0, 10);
+
+  document.getElementById('topDealsBody').innerHTML = top10.map(function(d, i) {
+    return '<tr>' +
+      '<td><span class="rank-num">' + (i + 1) + '</span></td>' +
+      '<td style="font-weight:600;">' + escHtml(d.target) + '</td>' +
+      '<td class="muted">' + escHtml(d.acquirer.split('\n')[0]) + '</td>' +
+      '<td><span class="country-badge">' + escHtml(d.country) + '</span></td>' +
+      '<td><span class="sector-pill">' + escHtml(d.sector) + '</span></td>' +
+      '<td class="r gold">' + fmtValLong(d.valueNum) + '</td>' +
+      '<td class="c">' + (d.stake !== '—' ? '<span class="stake-pill">' + escHtml(d.stake) + '</span>' : '<span class="muted">—</span>') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════ */
+function escHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ─── KICK OFF ─── */
+init();
+</script>
+</body>
+</html>
