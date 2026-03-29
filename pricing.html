@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing | DealFlow Africa</title>
+<meta name="description" content="Subscribe to DealFlow Africa for full access to 100+ M&A, PE, and VC transactions across Africa with valuation multiples and analyst support.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ─── CSS VARIABLES ─── */
+:root {
+  --green: #083335;
+  --gold: #C9A84C;
+  --gold-light: #d4b65e;
+  --gold-dim: rgba(201,168,76,.08);
+  --white: #ffffff;
+  --muted: rgba(255,255,255,.45);
+  --border: rgba(255,255,255,.06);
+  --border-sub: rgba(255,255,255,.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--green);
+  color: var(--white);
+  font-size: 14px;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ─── TICKER ─── */
+.ticker {
+  background: rgba(0,0,0,.25);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  white-space: nowrap;
+  animation: ticker 55s linear infinite;
+  padding-right: 48px;
+}
+.ticker-track span {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(255,255,255,.65);
+  letter-spacing: .04em;
+}
+.ticker-track span::before { content: '▲ '; color: var(--gold); }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── NAV ─── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  background: rgba(8,51,53,.95);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+}
+.logo-wrap { text-decoration: none; display: flex; flex-direction: column; }
+.l1 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--white); font-weight: 600; }
+.l2 { font-size: 14px; color: var(--muted); letter-spacing: .10em; text-transform: uppercase; margin-top: 1px; }
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-size: 18px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 2px;
+  transition: color .2s, background .2s;
+}
+.nav-links a:hover { color: var(--white); background: rgba(255,255,255,.05); }
+.nav-links .active-page { color: var(--gold) !important; background: var(--gold-dim) !important; }
+.btn-cta {
+  background: var(--gold) !important;
+  color: var(--green) !important;
+  font-weight: 600 !important;
+  padding: 7px 16px !important;
+  border-radius: 2px !important;
+}
+.btn-cta:hover { background: var(--gold-light) !important; }
+.btn-cta.active-page {
+  background: var(--gold-light) !important;
+  color: var(--green) !important;
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ─── PAGE HEADER ─── */
+.page-header {
+  padding: 72px 80px 60px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(201,168,76,.05) 0%, transparent 65%);
+  pointer-events: none;
+}
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 54px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 18px;
+}
+.page-header h1 em { color: var(--gold); font-style: italic; }
+.page-header p {
+  font-size: 16px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ─── PRICING SECTION ─── */
+.pricing-section {
+  padding: 72px 80px;
+  position: relative;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* ─── PRICING CARD ─── */
+.pricing-card {
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 4px;
+  padding: 40px 36px 36px;
+  display: flex;
+  flex-direction: column;
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.2), transparent);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.pricing-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,.12);
+  box-shadow: 0 16px 48px rgba(0,0,0,.3);
+}
+.pricing-card:hover::before { opacity: 1; }
+
+.pricing-card.featured {
+  border-color: rgba(201,168,76,.35);
+  background: rgba(201,168,76,.04);
+  box-shadow: 0 0 40px rgba(201,168,76,.06);
+}
+.pricing-card.featured::before {
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.5), transparent);
+}
+.pricing-card.featured:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201,168,76,.55);
+  box-shadow: 0 16px 56px rgba(201,168,76,.12);
+}
+
+/* Badge */
+.card-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--green);
+  padding: 3px 9px;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+/* Card header */
+.card-plan {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.card-price {
+  margin-bottom: 6px;
+}
+.card-price .amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1;
+}
+.card-price .period {
+  font-size: 14px;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.card-subprice {
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 28px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .04em;
+}
+.card-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 26px;
+}
+
+/* Save tag */
+.save-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(201,168,76,.2);
+  padding: 3px 9px;
+  border-radius: 2px;
+  margin-bottom: 26px;
+}
+
+/* Features */
+.feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  flex: 1;
+  margin-bottom: 32px;
+}
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: rgba(255,255,255,.80);
+  line-height: 1.5;
+}
+.feature-list li::before {
+  content: '✓';
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.feature-list li.highlight {
+  color: var(--gold);
+  font-weight: 500;
+}
+.feature-list li.highlight::before {
+  content: '★';
+  font-size: 13px;
+}
+
+/* CTA button */
+.card-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--gold);
+  color: var(--green);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-align: center;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  text-transform: uppercase;
+}
+.card-btn:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+}
+.card-btn:active { transform: translateY(0); }
+
+/* ─── INCLUDED SECTION ─── */
+.included-section {
+  padding: 0 80px 72px;
+}
+.included-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.included-header {
+  padding: 28px 36px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}
+.included-header .eyebrow { margin-bottom: 6px; }
+.included-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--white);
+}
+.included-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.included-item {
+  padding: 24px 36px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.included-item:nth-child(even) { border-right: none; }
+.included-item:nth-last-child(-n+2) { border-bottom: none; }
+.included-icon {
+  width: 32px;
+  height: 32px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(201,168,76,.15);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--gold);
+  font-size: 15px;
+}
+.included-text .it-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+.included-text .it-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ─── CONTACT SECTION ─── */
+.contact-section {
+  padding: 0 80px 72px;
+}
+.contact-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 36px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.contact-col .eyebrow { margin-bottom: 12px; }
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.contact-row a {
+  color: var(--gold);
+  text-decoration: none;
+  transition: color .2s;
+}
+.contact-row a:hover { color: var(--gold-light); }
+.contact-row .cicon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+  opacity: .7;
+  flex-shrink: 0;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: rgba(0,0,0,.2);
+  border-top: 1px solid var(--border);
+  padding: 36px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.fb .f1 { font-family: 'Playfair Display', serif; color: var(--white); font-size: 15px; }
+.fb .f2 { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.flinks { display: flex; gap: 20px; flex-wrap: wrap; }
+.flinks a { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .2s; }
+.flinks a:hover { color: var(--white); }
+.fcopy { font-size: 14px; color: rgba(255,255,255,.25); }
+
+/* ─── MODAL OVERLAY ─── */
+.checkout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+.checkout-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.checkout-box {
+  background: #0c3d40;
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: 4px;
+  padding: 40px 44px;
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  box-shadow: 0 24px 80px rgba(0,0,0,.5);
+  transform: translateY(16px);
+  transition: transform .25s ease;
+}
+.checkout-overlay.open .checkout-box {
+  transform: translateY(0);
+}
+.checkout-box .co-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color .2s;
+}
+.checkout-box .co-close:hover { color: var(--white); }
+.checkout-plan-badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-dim);
+  border: 1px solid rgba(201,168,76,.2);
+  padding: 3px 9px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+.checkout-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.checkout-box .co-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.co-field {
+  margin-bottom: 16px;
+}
+.co-field label {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.co-field input {
+  width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+.co-field input:focus {
+  border-color: var(--gold);
+}
+.co-field input::placeholder { color: rgba(255,255,255,.25); }
+.co-err {
+  font-size: 13px;
+  color: #e87; 
+  margin-bottom: 14px;
+  display: none;
+}
+.co-submit {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--gold);
+  color: var(--green);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .2s;
+  margin-top: 6px;
+}
+.co-submit:hover { background: var(--gold-light); }
+.co-submit:disabled { opacity: .6; cursor: not-allowed; }
+.co-legal {
+  margin-top: 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,.3);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .pricing-section { padding: 56px 40px; }
+  .included-section { padding: 0 40px 56px; }
+  .contact-section { padding: 0 40px 56px; }
+  footer { padding: 28px 40px; }
+  .page-header { padding: 56px 40px 48px; }
+}
+@media (max-width: 720px) {
+  nav { padding: 0 20px; }
+  .mobile-toggle { display: block; }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 64px; left: 0; right: 0;
+    background: rgba(8,51,53,.98);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    gap: 0;
+    z-index: 199;
+  }
+  .nav-links.open { display: flex; }
+  .nav-links li { width: 100%; }
+  .nav-links a { display: block; padding: 10px 20px; border-radius: 0; }
+  .btn-cta { margin: 6px 12px !important; border-radius: 2px !important; text-align: center; display: block; }
+  .pricing-section { padding: 48px 20px; }
+  .pricing-grid { grid-template-columns: 1fr; gap: 20px; max-width: 420px; }
+  .included-section { padding: 0 20px 48px; }
+  .included-grid { grid-template-columns: 1fr; }
+  .included-item { border-right: none !important; }
+  .included-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .included-item:last-child { border-bottom: none; }
+  .contact-section { padding: 0 20px 48px; }
+  .contact-inner { padding: 24px 20px; gap: 28px; }
+  footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; }
+  .page-header { padding: 40px 20px 36px; }
+  .checkout-box { padding: 32px 24px; margin: 16px; max-width: calc(100% - 32px); }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── TICKER ─── -->
+<div class="ticker">
+  <div class="ticker-track" id="tickerTrack">
+    <span>Shoprite / Vantage Capital &middot; $45M &middot; South Africa</span>
+    <span>Moove Africa / Mitsui &middot; $76M &middot; Nigeria</span>
+    <span>Wasoko / Avencore &middot; $125M &middot; Kenya</span>
+    <span>Cassava Technologies / CDC Group &middot; $300M &middot; Zimbabwe</span>
+    <span>Wave / Sequoia Heritage &middot; $200M &middot; Senegal</span>
+    <span>BURN Manufacturing / Standard Bank &middot; $10M &middot; Kenya</span>
+    <span>Omnibiz Africa / Timon Capital &middot; $15M &middot; Nigeria</span>
+    <span>Tyme Bank / Blue Earth Capital &middot; $77M &middot; South Africa</span>
+    <span>Shoprite / Vantage Capital &middot; $45M &middot; South Africa</span>
+    <span>Moove Africa / Mitsui &middot; $76M &middot; Nigeria</span>
+    <span>Wasoko / Avencore &middot; $125M &middot; Kenya</span>
+    <span>Cassava Technologies / CDC Group &middot; $300M &middot; Zimbabwe</span>
+    <span>Wave / Sequoia Heritage &middot; $200M &middot; Senegal</span>
+    <span>BURN Manufacturing / Standard Bank &middot; $10M &middot; Kenya</span>
+    <span>Omnibiz Africa / Timon Capital &middot; $15M &middot; Nigeria</span>
+    <span>Tyme Bank / Blue Earth Capital &middot; $77M &middot; South Africa</span>
+  </div>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a href="index.html" class="logo-wrap"><div class="l1">DealFlow Africa</div><div class="l2">by Achievers Regal</div></a>
+  <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="deals.html">Deals</a></li>
+    <li><a href="capital-flow.html">Capital Flow</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="pricing.html" class="btn-cta active-page">Pricing</a></li>
+  </ul>
+</nav>
+
+<!-- ─── PAGE HEADER ─── -->
+<div class="page-header">
+  <div class="eyebrow">Pricing</div>
+  <h1>Unlock the Full <em>Database</em></h1>
+  <p>Get complete access to 100+ tracked M&amp;A, PE, and VC transactions across Africa &mdash; plus direct analyst support.</p>
+</div>
+
+<!-- ─── PRICING CARDS ─── -->
+<section class="pricing-section">
+  <div class="pricing-grid">
+
+    <!-- Card 1: Monthly -->
+    <div class="pricing-card">
+      <div class="card-plan">Monthly Plan</div>
+      <div class="card-price">
+        <span class="amount">$20</span><span class="period">/month</span>
+      </div>
+      <div class="card-subprice">Billed monthly &mdash; cancel any time</div>
+      <div class="card-divider"></div>
+      <ul class="feature-list">
+        <li>Full deal database (100+ transactions)</li>
+        <li>All valuation multiples &amp; financial data</li>
+        <li>Advanced filtering &amp; search</li>
+        <li>Weekly deal alerts</li>
+        <li>Direct analyst access for metric clarifications</li>
+      </ul>
+      <button class="card-btn" onclick="openCheckout('monthly')">Subscribe Monthly</button>
+    </div>
+
+    <!-- Card 2: Annual -->
+    <div class="pricing-card featured">
+      <div class="card-badge">Best Value</div>
+      <div class="card-plan">Annual Plan</div>
+      <div class="card-price">
+        <span class="amount">$216</span><span class="period">/year</span>
+      </div>
+      <div class="card-subprice">$18/month &mdash; billed annually</div>
+      <div class="save-tag">Save 10% vs Monthly</div>
+      <div class="card-divider"></div>
+      <ul class="feature-list">
+        <li>Full deal database (100+ transactions)</li>
+        <li>All valuation multiples &amp; financial data</li>
+        <li>Advanced filtering &amp; search</li>
+        <li>Weekly deal alerts</li>
+        <li>Direct analyst access for metric clarifications</li>
+        <li class="highlight">10% discount vs monthly billing</li>
+        <li class="highlight">Priority analyst response</li>
+      </ul>
+      <button class="card-btn" onclick="openCheckout('annual')">Subscribe Annually</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── WHAT'S INCLUDED ─── -->
+<section class="included-section">
+  <div class="included-inner">
+    <div class="included-header">
+      <div class="eyebrow">What&rsquo;s Included</div>
+      <h2>Everything in Your Subscription</h2>
+    </div>
+    <div class="included-grid">
+      <div class="included-item">
+        <div class="included-icon">&#9776;</div>
+        <div class="included-text">
+          <div class="it-title">Full Transaction Database</div>
+          <div class="it-desc">All disclosed and undisclosed deals &mdash; 100+ M&amp;A, PE, and VC transactions tracked across Africa.</div>
+        </div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">&#9652;</div>
+        <div class="included-text">
+          <div class="it-title">Valuation Benchmarks</div>
+          <div class="it-desc">EV/Sales and EV/EBITDA multiples with contextual sector comparables and deal-by-deal breakdowns.</div>
+        </div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">&#9670;</div>
+        <div class="included-text">
+          <div class="it-title">Capital Flow Analytics</div>
+          <div class="it-desc">Market intelligence on where capital is moving &mdash; by country, sector, and transaction type.</div>
+        </div>
+      </div>
+      <div class="included-item">
+        <div class="included-icon">&#9993;</div>
+        <div class="included-text">
+          <div class="it-title">Direct Analyst Access</div>
+          <div class="it-desc">Reach Achievers Regal analysts directly for clarification on any deal metric, methodology, or data point.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section class="contact-section">
+  <div class="contact-inner">
+    <div class="contact-col">
+      <div class="eyebrow">Contact</div>
+      <div class="contact-row">
+        <svg class="cicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Grace Kagure &mdash; <a href="mailto:grace@achieversregal.com">grace@achieversregal.com</a>
+      </div>
+      <div class="contact-row">
+        <svg class="cicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Beryl Nyajuoga &mdash; <a href="mailto:beryl@achieversregal.com">beryl@achieversregal.com</a>
+      </div>
+    </div>
+    <div class="contact-col">
+      <div class="eyebrow">Phone</div>
+      <div class="contact-row">
+        <svg class="cicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 11a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.07 6.07l.96-.96a2 2 0 0 1 2.12-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <a href="tel:+254717579383">+254 717 579 383</a> &nbsp;/&nbsp; <a href="tel:+254727262212">+254 727 262 212</a>
+      </div>
+      <div class="contact-row">
+        <svg class="cicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+        Nairobi, Kenya
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="fb">
+    <div class="f1">DealFlow Africa</div>
+    <div class="f2">by Achievers Regal &middot; Nairobi, Kenya</div>
+  </div>
+  <div class="flinks">
+    <a href="deals.html">Deals</a>
+    <a href="capital-flow.html">Capital Flow</a>
+    <a href="insights.html">Insights</a>
+    <a href="about.html">About</a>
+    <a href="team.html">Team</a>
+    <a href="pricing.html">Pricing</a>
+  </div>
+  <div class="fcopy">&copy; 2025 Achievers Regal. All rights reserved.</div>
+</footer>
+
+<!-- ─── CHECKOUT MODAL ─── -->
+<div class="checkout-overlay" id="checkoutOverlay" onclick="if(event.target===this)closeCheckout()">
+  <div class="checkout-box">
+    <button class="co-close" onclick="closeCheckout()">&#10005;</button>
+    <div class="checkout-plan-badge" id="coPlanBadge">Monthly Plan</div>
+    <h3 id="coTitle">Subscribe to DealFlow Africa</h3>
+    <p class="co-sub" id="coSub">Enter your details to proceed to secure payment.</p>
+    <div class="co-field">
+      <label>Full Name</label>
+      <input type="text" id="coName" placeholder="Your full name" autocomplete="name">
+    </div>
+    <div class="co-field">
+      <label>Email Address</label>
+      <input type="email" id="coEmail" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="co-err" id="coErr">Please enter your name and a valid email address.</div>
+    <button class="co-submit" id="coSubmit" onclick="proceedToPayment()">Proceed to Payment &rarr;</button>
+    <p class="co-legal">Secured by Flutterwave &middot; Card, Mobile Money, Bank Transfer accepted</p>
+  </div>
+</div>
+
+<!-- Flutterwave Inline JS SDK -->
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<script>
+// REPLACE WITH YOUR FLUTTERWAVE PUBLIC KEY
+var FLW_PUBLIC_KEY = 'FLWPUBK-XXXXXXXXXXXXXXXX-X';
+
+var activePlan = 'monthly'; // 'monthly' or 'annual'
+
+function openCheckout(plan) {
+  activePlan = plan;
+  var overlay = document.getElementById('checkoutOverlay');
+  var badge   = document.getElementById('coPlanBadge');
+  var title   = document.getElementById('coTitle');
+  var sub     = document.getElementById('coSub');
+
+  if (plan === 'annual') {
+    badge.textContent = 'Annual Plan — Best Value';
+    title.textContent = 'Subscribe Annually';
+    sub.textContent   = '$216/year · billed once · enter your details to pay.';
+  } else {
+    badge.textContent = 'Monthly Plan';
+    title.textContent = 'Subscribe Monthly';
+    sub.textContent   = '$20/month · enter your details to proceed to secure payment.';
+  }
+
+  document.getElementById('coName').value  = '';
+  document.getElementById('coEmail').value = '';
+  document.getElementById('coErr').style.display = 'none';
+  overlay.classList.add('open');
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutOverlay').classList.remove('open');
+}
+
+function proceedToPayment() {
+  var name  = document.getElementById('coName').value.trim();
+  var email = document.getElementById('coEmail').value.trim();
+  var errEl = document.getElementById('coErr');
+
+  if (!name || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var btn = document.getElementById('coSubmit');
+  btn.disabled = true;
+  btn.textContent = 'Opening payment…';
+
+  var amount      = activePlan === 'annual' ? 216 : 20;
+  var description = activePlan === 'annual' ? 'Annual Subscription' : 'Monthly Subscription';
+  var txRef       = 'DFA-' + Date.now();
+
+  closeCheckout();
+
+  FlutterwaveCheckout({
+    public_key:      FLW_PUBLIC_KEY,
+    tx_ref:          txRef,
+    amount:          amount,
+    currency:        'USD',
+    payment_options: 'card,mobilemoney,ussd,banktransfer',
+    customer: {
+      email: email,
+      name:  name
+    },
+    customizations: {
+      title:       'DealFlow Africa',
+      description: description,
+      logo:        ''
+    },
+    callback: function(data) {
+      // Payment completed — redirect to success page with transaction reference
+      window.location.href = 'success.html?tx_ref=' + encodeURIComponent(txRef) + '&plan=' + encodeURIComponent(activePlan);
+    },
+    onclose: function() {
+      // User closed the payment modal — do nothing, just re-enable button
+      btn.disabled = false;
+      btn.textContent = 'Proceed to Payment →';
+    }
+  });
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeCheckout();
+});
+</script>
+
+</body>
+</html>

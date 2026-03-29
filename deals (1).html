@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Africa M&A & PE Deals Database | DealFlow Africa</title>
+<meta name="description" content="Browse the latest M&A, private equity and venture capital transactions across Africa. Updated daily.">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Loading */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:16px;}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state p{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.08em;}
+
+/* Filter row */
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.filter-group{display:flex;flex-direction:column;gap:5px;}
+.filter-group label{font-size:9.5px;font-family:'DM Mono',monospace;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.filter-select{background:rgba(255,255,255,.04);border:1px solid var(--border-sub);color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 12px;border-radius:2px;outline:none;cursor:pointer;min-width:140px;transition:border-color .2s;}
+.filter-select:focus,.filter-select:hover{border-color:var(--gold);}
+.filter-select option{background:#083335;color:#fff;}
+.clear-btn{font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;padding:7px 14px;border-radius:2px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,.45);cursor:pointer;transition:all .2s;align-self:flex-end;}
+.clear-btn:hover{border-color:var(--gold);color:var(--white);}
+
+/* Paywall banner */
+.paywall-banner{position:relative;margin-top:-2px;background:linear-gradient(180deg,rgba(8,51,53,0) 0%,rgba(8,51,53,.97) 38%,rgba(8,51,53,1) 100%);padding:60px 5% 40px;text-align:center;border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;}
+.paywall-banner h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:10px;}
+.paywall-banner p{font-size:13.5px;color:var(--muted);max-width:480px;margin:0 auto 24px;line-height:1.75;}
+.paywall-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.pw-btn-primary{background:var(--gold);color:var(--green);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:12px 28px;border-radius:2px;text-decoration:none;letter-spacing:.04em;transition:background .2s;}
+.pw-btn-primary:hover{background:var(--gold-light);}
+.pw-btn-secondary{background:transparent;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:12px 24px;border-radius:2px;text-decoration:none;border:1px solid var(--border);transition:all .2s;}
+.pw-btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.paywall-features{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+.paywall-features .pf{display:flex;align-items:center;gap:7px;font-size:12px;color:rgba(255,255,255,.6);}
+.paywall-features .pf::before{content:'✓';color:var(--gold);font-weight:700;font-size:13px;}
+.deal-count-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--border);border-radius:2px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--gold);margin-bottom:18px;}
+
+/* Table blur effect on last 3 rows */
+tbody tr.blur-row td{filter:blur(4px);user-select:none;pointer-events:none;}
+tbody tr.blur-row:hover{background:transparent;cursor:default;}
+
+/* Last updated */
+.last-updated{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;}
+.results-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+
+/* Subscriber unlock button */
+.unlock-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.unlock-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--border);color:var(--gold);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;padding:8px 16px;border-radius:2px;cursor:pointer;transition:all .2s;}
+.unlock-btn:hover{background:rgba(201,168,76,.2);border-color:var(--gold);}
+.unlock-btn.unlocked{background:rgba(40,167,69,.12);border-color:rgba(40,167,69,.4);color:#5cb85c;}
+.sub-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:600;align-items:center;justify-content:center;padding:20px;}
+.sub-overlay.open{display:flex;}
+.sub-box{background:#0a3d40;border:1px solid var(--border);border-radius:6px;padding:36px;max-width:400px;width:100%;text-align:center;}
+.sub-box h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.sub-box p{font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.sub-box input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--white);font-family:'DM Mono',monospace;font-size:14px;padding:12px 14px;border-radius:2px;outline:none;margin-bottom:10px;text-align:center;letter-spacing:.15em;}
+.sub-box input:focus{border-color:var(--gold);}
+.sub-box .sub-signin{width:100%;background:var(--gold);color:var(--green);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:12px;border:none;border-radius:2px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;}
+.sub-box .sub-signin:hover{background:var(--gold-light);}
+.sub-box .sub-err{font-size:14px;color:#ff8080;margin-top:8px;display:none;}
+.sub-box .sub-link{display:block;margin-top:16px;font-size:14px;color:var(--gold);text-decoration:none;}
+.sub-box .sub-link:hover{text-decoration:underline;}
+.sub-cancel{background:none;border:none;color:rgba(255,255,255,.35);font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:12px;}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="tickerTrack">
+<span>&#9650; Loading latest deals&hellip;</span>
+</div></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo-wrap"><div class="l1">DealFlow Africa</div><div class="l2">by Achievers Regal</div></a>
+  <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="deals.html" class="active-page">Deals</a></li>
+    <li><a href="capital-flow.html">Capital Flow</a></li>
+    <li><a href="insights.html">Insights</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="pricing.html" class="btn-cta">Pricing</a></li>
+    <li><button class="admin-btn" onclick="document.getElementById('loginOverlay').classList.add('open')">&#9881; Admin</button></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="eyebrow">Transaction Database</div>
+  <h1>Deals in <em>Africa</em></h1>
+  <p>The 25 most recent M&amp;A, private equity, and venture capital transactions across the continent &mdash; updated daily from our database.</p>
+</div>
+
+<section>
+
+  <!-- UNLOCK BAR -->
+  <div class="unlock-bar" id="unlockBar" style="display:none;">
+    <div></div>
+    <button class="unlock-btn" id="unlockBtn" onclick="openSubscriberLogin()">
+      &#128274; Subscriber Access
+    </button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row" id="filterRow" style="display:none;">
+    <div class="filter-group">
+      <label>Country</label>
+      <select class="filter-select" id="filterCountry" onchange="applyFilters()">
+        <option value="">All Countries</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Sector</label>
+      <select class="filter-select" id="filterSector" onchange="applyFilters()">
+        <option value="">All Sectors</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Transaction Type</label>
+      <select class="filter-select" id="filterTxnType" onchange="applyFilters()">
+        <option value="">All Types</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Date Range</label>
+      <select class="filter-select" id="filterDate" onchange="applyFilters()">
+        <option value="">All Time</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 3 months</option>
+        <option value="180">Last 6 months</option>
+        <option value="365">Last 12 months</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Search</label>
+      <div class="srch" style="align-self:flex-end;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Company, sector&hellip;" oninput="applyFilters()">
+      </div>
+    </div>
+    <button class="clear-btn" onclick="clearFilters()">Clear filters</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <p>Loading latest deals&hellip;</p>
+  </div>
+
+  <!-- Table -->
+  <div id="tableWrap" style="display:none;">
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th><th>Announced Date</th><th>Transaction Type</th><th>Country</th><th>Sector</th>
+            <th>Target</th><th>Acquirer / Investors</th>
+            <th>Investment Summary</th>
+            <th style="text-align:right">Deal Value ($M)</th>
+            <th style="text-align:center">Stake</th>
+            <th style="text-align:right">Sales ($M)</th>
+            <th style="text-align:right">EV/Sales</th>
+            <th style="text-align:right">EV/EBITDA</th>
+          </tr>
+        </thead>
+        <tbody id="dealsBody"></tbody>
+      </table>
+    </div>
+
+    <!-- PAYWALL BANNER -->
+    <div class="paywall-banner" id="paywallBanner">
+      <div class="deal-count-badge">
+        <span id="totalDealsCount">100+</span> total transactions in our full database
+      </div>
+      <h3>You&rsquo;re seeing 25 of <span id="paywallTotal">100+</span> deals</h3>
+      <p>Get full access to our complete transaction database, advanced filters, valuation data, deal summaries, and weekly deal alerts.</p>
+      <div class="paywall-features">
+        <div class="pf">Full transaction database</div>
+        <div class="pf">Advanced filtering &amp; search</div>
+        <div class="pf">Valuation benchmarks</div>
+        <div class="pf">Weekly deal alerts</div>
+        <div class="pf">Direct analyst access</div>
+      </div>
+      <div class="paywall-btns">
+        <a href="pricing.html" class="pw-btn-primary">Subscribe Now &rarr;</a>
+        <a href="pricing.html" class="pw-btn-secondary">View Pricing</a>
+      </div>
+    </div>
+
+    <div class="tbl-footer" style="margin-top:20px;">
+      <div class="results-meta">
+        <span class="cnt" id="dealCount"></span>
+        <span class="last-updated" id="lastUpdated"></span>
+      </div>
+      <a href="pricing.html" id="footerAccessLink" style="font-size:12px;color:var(--gold);text-decoration:none;border-bottom:1px solid var(--border);">Subscribe for full database access &rarr;</a>
+    </div>
+  </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fb"><div class="f1">DealFlow Africa</div><div class="f2">by Achievers Regal &middot; Nairobi, Kenya</div></div>
+  <div class="flinks">
+    <a href="deals.html">Deals</a><a href="capital-flow.html">Capital Flow</a>
+    <a href="insights.html">Insights</a><a href="about.html">About</a>
+    <a href="team.html">Team</a><a href="pricing.html">Pricing</a>
+  </div>
+  <div class="fcopy">&copy; 2025 Achievers Regal. All rights reserved.</div>
+</footer>
+
+<!-- DEAL MODAL -->
+<div class="modal-bg" id="dealModal" onclick="if(event.target.id==='dealModal')this.classList.remove('open')">
+  <div class="modal">
+    <button class="mcl" onclick="document.getElementById('dealModal').classList.remove('open')">&#10005;</button>
+    <div class="mtag" id="m-tag"></div><h2 id="m-title"></h2>
+    <div class="mgrid">
+      <div class="mf"><div class="mfl">Announced Date</div><div class="mfv" id="m-dt"></div></div>
+      <div class="mf"><div class="mfl">Transaction Type</div><div class="mfv" id="m-txn"></div></div>
+      <div class="mf"><div class="mfl">Country</div><div class="mfv" id="m-ctry"></div></div>
+      <div class="mf"><div class="mfl">Sector</div><div class="mfv" id="m-sec"></div></div>
+      <div class="mf"><div class="mfl">Acquirer / Investors</div><div class="mfv" id="m-acq"></div></div>
+      <div class="mf"><div class="mfl">Deal Value ($ million)</div><div class="mfv" id="m-val"></div></div>
+      <div class="mf"><div class="mfl">Stake</div><div class="mfv" id="m-stk"></div></div>
+      <div class="mf"><div class="mfl">Sales ($ million)</div><div class="mfv" id="m-sales"></div></div>
+      <div class="mf"><div class="mfl">EV/Sales Multiple</div><div class="mfv" id="m-evsales"></div></div>
+      <div class="mf"><div class="mfl">EV/EBITDA Multiple</div><div class="mfv" id="m-evebitda"></div></div>
+    </div>
+    <div class="msum"><div class="mfl" style="margin-bottom:6px;">Investment Summary</div><div id="m-sum"></div></div>
+  </div>
+</div>
+
+<!-- SUBSCRIBER LOGIN -->
+<div class="sub-overlay" id="subOverlay" onclick="if(event.target.id==='subOverlay')this.classList.remove('open')">
+  <div class="sub-box">
+    <h3>Subscriber Access</h3>
+    <p>Enter your access code to unlock the full database.</p>
+    <input type="password" id="subInput" placeholder="Access code" onkeydown="if(event.key==='Enter')doSubLogin()">
+    <button class="sub-signin" onclick="doSubLogin()">Unlock Database</button>
+    <div class="sub-err" id="subErr">Invalid access code. Please check and try again.</div>
+    <a href="pricing.html" class="sub-link">Don't have an access code? Subscribe here &rarr;</a>
+    <button class="sub-cancel" onclick="document.getElementById('subOverlay').classList.remove('open')">Cancel</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo"><div class="lar"><span class="la">A</span><span class="lr">R</span></div><div class="lname">Achievers Regal</div></div>
+    <h3>Admin Access</h3><p>Update deals by editing the Google Sheet directly.</p>
+    <input type="password" id="loginInput" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In &rarr;</button>
+    <div class="login-err" id="loginErr">Incorrect password.</div>
+    <div style="margin-top:14px"><button onclick="document.getElementById('loginOverlay').classList.remove('open')" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:11.5px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancel</button></div>
+  </div>
+</div>
+<div class="admin-overlay" id="adminOverlay" style="display:none;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script>
+var SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoodUG0hcux9GxoqYAm8E3pByMCm0MaP8-gFDGMywa5e8pN8L0YHhVBw4YAPYhtvCdGByRkIuTcLzG/pub?gid=0&single=true&output=csv';
+var PREVIEW_LIMIT = 25;
+var SUBSCRIBER_PASSWORD = 'DealAccess2025!';
+var IS_UNLOCKED = localStorage.getItem('dfa_unlocked') === 'true';
+var ALL_DEALS = [];      // all rows from sheet
+var PREVIEW_DEALS = [];  // first 25 only (or all if unlocked)
+var FILTERED = [];       // current filtered view
+
+function mapRow(row) {
+  var keys = Object.keys(row);
+  function g(candidates) {
+    for (var i = 0; i < candidates.length; i++)
+      for (var j = 0; j < keys.length; j++)
+        if (keys[j].toLowerCase().trim() === candidates[i].toLowerCase())
+          return (row[keys[j]] || '').trim();
+    return '';
+  }
+  var target   = g(['target','target company','company','target name']);
+  var country  = g(['country','market','geography','location']);
+  if (!target) return null;
+
+  var value    = g(['deal value ($ million)','deal value','value ($m)','value','deal value ($m)','amount','size ($m)','deal size']);
+  var valueNum = null;
+  if (value && value.toLowerCase() !== 'undisclosed' && value !== '' && value !== '-' && value !== '—') {
+    var num = parseFloat(value.replace(/[$,\s]/gi,''));
+    if (!isNaN(num)) {
+      if (value.toUpperCase().indexOf('B') > -1 && num < 1000) num *= 1000;
+      valueNum = num;
+    }
+  }
+
+  var sales = g(['sales ($ million)','sales ($m)','sales','revenue ($m)','revenue']);
+  var salesNum = null;
+  if (sales && sales !== '' && sales !== '-' && sales !== '—') {
+    var sn = parseFloat(sales.replace(/[$,\s]/gi,''));
+    if (!isNaN(sn)) salesNum = sn;
+  }
+
+  return {
+    date:       g(['announced date','date','announced','deal date']) || '—',
+    txnType:    g(['transaction type','transaction_type','type','deal type']) || '—',
+    target:     target,
+    acquirer:   g(['acquirer/ investors','acquirer/investors','acquirer / investors','acquirer','acquirer / investor','acquirer/investor','investor','buyer']) || '—',
+    country:    country || '—',
+    sector:     g(['sector','industry']) || '—',
+    summary:    g(['investment summary','summary','description','notes','deal summary','detail']) || '',
+    value:      (!value || value === '-' || value === '—') ? 'Undisclosed' : value,
+    valueNum:   valueNum,
+    stake:      g(['stake','% stake','ownership','equity stake','interest']) || '—',
+    sales:      (!sales || sales === '-' || sales === '—') ? '—' : sales,
+    salesNum:   salesNum,
+    evSales:    g(['ev/sales multiple','ev/sales','ev / sales multiple','ev / sales']) || '—',
+    evEbitda:   g(['ev/ebitda multiple','ev/ebitda','ev / ebitda multiple','ev / ebitda']) || '—'
+  };
+}
+
+function loadDeals() {
+  Papa.parse(SHEET_CSV, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      ALL_DEALS = [];
+      results.data.forEach(function(row) {
+        var m = mapRow(row);
+        if (m) ALL_DEALS.push(m);
+      });
+
+      if (ALL_DEALS.length === 0) {
+        document.getElementById('loadingState').innerHTML = '<p style="color:var(--muted);font-size:13px;">No data found. Please check the Google Sheet is published correctly.</p>';
+        return;
+      }
+
+      // First 25 for preview, or all if subscriber
+      PREVIEW_DEALS = IS_UNLOCKED ? ALL_DEALS.slice() : ALL_DEALS.slice(0, PREVIEW_LIMIT);
+
+      // Populate filter dropdowns from preview data
+      populateFilters();
+
+      // Update paywall totals
+      var total = ALL_DEALS.length;
+      document.getElementById('totalDealsCount').textContent = total + '+';
+      document.getElementById('paywallTotal').textContent = total;
+
+      // Update ticker with disclosed deals
+      var disclosed = ALL_DEALS.filter(function(d){ return d.valueNum; }).slice(0, 8);
+      if (disclosed.length > 0) {
+        var items = disclosed.concat(disclosed).map(function(d){
+          return '<span>&#9650; '+d.target+' / '+d.acquirer+' &middot; '+d.value+' &middot; '+d.country+'</span>';
+        }).join('');
+        document.getElementById('tickerTrack').innerHTML = items;
+      }
+
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('tableWrap').style.display = 'block';
+      document.getElementById('filterRow').style.display = 'flex';
+      document.getElementById('unlockBar').style.display = 'flex';
+
+      // If unlocked, hide paywall and update UI
+      if (IS_UNLOCKED) {
+        document.getElementById('paywallBanner').style.display = 'none';
+        document.getElementById('unlockBtn').innerHTML = '&#128275; Full Access Active';
+        document.getElementById('unlockBtn').classList.add('unlocked');
+        document.getElementById('unlockBtn').onclick = function(){ doSubLogout(); };
+        var fal = document.getElementById('footerAccessLink');
+        if (fal) fal.style.display = 'none';
+      }
+
+      var now = new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      document.getElementById('lastUpdated').textContent = 'Updated ' + now;
+
+      FILTERED = PREVIEW_DEALS.slice();
+      renderTable();
+    },
+    error: function(err) {
+      document.getElementById('loadingState').innerHTML = '<p style="color:var(--muted);font-size:13px;">Could not load deals. <a href="javascript:location.reload()" style="color:var(--gold);">Refresh</a></p>';
+    }
+  });
+}
+
+function populateFilters() {
+  // Countries — from all deals so filters reflect full scope
+  var countries = [...new Set(ALL_DEALS.map(function(d){ return d.country; }).filter(Boolean).sort())];
+  var cSel = document.getElementById('filterCountry');
+  countries.forEach(function(c) {
+    var o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    cSel.appendChild(o);
+  });
+
+  // Sectors
+  var sectors = [...new Set(ALL_DEALS.map(function(d){ return d.sector; }).filter(Boolean).sort())];
+  var sSel = document.getElementById('filterSector');
+  sectors.forEach(function(s) {
+    var o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sSel.appendChild(o);
+  });
+
+  // Transaction Types
+  var types = [...new Set(ALL_DEALS.map(function(d){ return d.txnType; }).filter(function(t){ return t && t !== '—'; }).sort())];
+  var tSel = document.getElementById('filterTxnType');
+  types.forEach(function(t) {
+    var o = document.createElement('option');
+    o.value = t; o.textContent = t;
+    tSel.appendChild(o);
+  });
+}
+
+function applyFilters() {
+  var country  = document.getElementById('filterCountry').value;
+  var sector   = document.getElementById('filterSector').value;
+  var txnType  = document.getElementById('filterTxnType').value;
+  var days     = parseInt(document.getElementById('filterDate').value) || 0;
+  var search   = document.getElementById('searchInput').value.toLowerCase().trim();
+
+  var cutoff = null;
+  if (days > 0) {
+    cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+  }
+
+  FILTERED = PREVIEW_DEALS.filter(function(d) {
+    if (country && d.country !== country) return false;
+    if (sector  && d.sector  !== sector)  return false;
+    if (txnType && d.txnType !== txnType) return false;
+    if (search) {
+      var hay = (d.target + ' ' + d.acquirer + ' ' + d.sector + ' ' + d.country).toLowerCase();
+      if (hay.indexOf(search) === -1) return false;
+    }
+    if (cutoff && d.date && d.date !== '—') {
+      var parts = d.date.split(/[-\/]/);
+      var dDate = new Date(d.date);
+      if (isNaN(dDate.getTime())) {
+        // try DD/MM/YYYY
+        if (parts.length === 3) dDate = new Date(parts[2]+'-'+parts[1]+'-'+parts[0]);
+      }
+      if (!isNaN(dDate.getTime()) && dDate < cutoff) return false;
+    }
+    return true;
+  });
+
+  renderTable();
+}
+
+function clearFilters() {
+  document.getElementById('filterCountry').value = '';
+  document.getElementById('filterSector').value  = '';
+  document.getElementById('filterTxnType').value = '';
+  document.getElementById('filterDate').value    = '';
+  document.getElementById('searchInput').value   = '';
+  FILTERED = PREVIEW_DEALS.slice();
+  renderTable();
+}
+
+function renderTable() {
+  var showBlur = !IS_UNLOCKED && FILTERED.length >= 3;
+
+  document.getElementById('dealsBody').innerHTML = FILTERED.map(function(d, i) {
+    var realIdx = ALL_DEALS.indexOf(d);
+    // Blur last 3 rows as a paywall tease
+    var isBlur = showBlur && i >= FILTERED.length - 3;
+    var blurClass = isBlur ? ' class="blur-row"' : '';
+    return '<tr' + blurClass + (isBlur ? '' : ' onclick="openModal('+realIdx+')"') + '>'
+      + '<td class="td-logo"><div class="logo-fallback"><div class="ar-init"><span class="ar-a">A</span><span class="ar-r">R</span></div><div class="ar-name">Achievers Regal</div></div></td>'
+      + '<td class="td-date">'   + d.date     + '</td>'
+      + '<td class="td-txn">'    + d.txnType  + '</td>'
+      + '<td class="td-country"><span>' + d.country + '</span></td>'
+      + '<td class="td-sector"><span>'  + d.sector  + '</span></td>'
+      + '<td class="td-target">' + d.target   + '</td>'
+      + '<td class="td-acq">'    + d.acquirer + '</td>'
+      + '<td class="td-summary">' + (d.summary.length > 60 ? d.summary.substring(0,60) + '&hellip;' : (d.summary || '—')) + '</td>'
+      + '<td class="td-val ' + (d.valueNum ? 'known' : 'undisclosed') + '">' + d.value + '</td>'
+      + '<td class="td-stake">' + d.stake + '</td>'
+      + '<td class="td-val">'   + d.sales    + '</td>'
+      + '<td class="td-val">'   + d.evSales   + '</td>'
+      + '<td class="td-val">'   + d.evEbitda  + '</td>'
+      + '</tr>';
+  }).join('');
+
+  var showing = FILTERED.length;
+  var totalLabel = IS_UNLOCKED ? (ALL_DEALS.length + ' total') : '25 preview';
+  document.getElementById('dealCount').textContent = 'Showing ' + showing + ' of ' + totalLabel + ' deal' + (showing !== 1 ? 's' : '');
+}
+
+function openModal(i) {
+  var d = ALL_DEALS[i];
+  if (!d) return;
+  document.getElementById('m-tag').textContent     = d.txnType + ' · ' + d.sector + ' · ' + d.country;
+  document.getElementById('m-title').textContent   = d.target;
+  document.getElementById('m-dt').textContent      = d.date;
+  document.getElementById('m-txn').textContent     = d.txnType;
+  document.getElementById('m-acq').textContent     = d.acquirer;
+  document.getElementById('m-ctry').textContent    = d.country;
+  document.getElementById('m-val').textContent     = d.value;
+  document.getElementById('m-stk').textContent     = d.stake;
+  document.getElementById('m-sec').textContent     = d.sector;
+  document.getElementById('m-sales').textContent   = d.sales;
+  document.getElementById('m-evsales').textContent = d.evSales;
+  document.getElementById('m-evebitda').textContent = d.evEbitda;
+  document.getElementById('m-sum').textContent     = d.summary;
+  document.getElementById('dealModal').classList.add('open');
+}
+
+function doLogin() {
+  if (document.getElementById('loginInput').value === 'DealBase2025!') {
+    document.getElementById('loginOverlay').classList.remove('open');
+    window.open('https://docs.google.com/spreadsheets/d/e/2PACX-1vSoodUG0hcux9GxoqYAm8E3pByMCm0MaP8-gFDGMywa5e8pN8L0YHhVBw4YAPYhtvCdGByRkIuTcLzG/pubhtml', '_blank');
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('loginInput').value = '';
+  }
+}
+
+function openSubscriberLogin() {
+  if (IS_UNLOCKED) return;
+  document.getElementById('subOverlay').classList.add('open');
+  document.getElementById('subInput').value = '';
+  document.getElementById('subErr').style.display = 'none';
+  setTimeout(function(){ document.getElementById('subInput').focus(); }, 100);
+}
+
+function doSubLogin() {
+  var pw = document.getElementById('subInput').value;
+  if (pw === SUBSCRIBER_PASSWORD) {
+    localStorage.setItem('dfa_unlocked', 'true');
+    IS_UNLOCKED = true;
+    document.getElementById('subOverlay').classList.remove('open');
+    // Reload with full data
+    PREVIEW_DEALS = ALL_DEALS.slice();
+    FILTERED = PREVIEW_DEALS.slice();
+    document.getElementById('paywallBanner').style.display = 'none';
+    document.getElementById('unlockBtn').innerHTML = '&#128275; Full Access Active';
+    document.getElementById('unlockBtn').classList.add('unlocked');
+    document.getElementById('unlockBtn').onclick = function(){ doSubLogout(); };
+    var fal = document.getElementById('footerAccessLink');
+    if (fal) fal.style.display = 'none';
+    populateFilters();
+    applyFilters();
+  } else {
+    document.getElementById('subErr').style.display = 'block';
+    document.getElementById('subInput').value = '';
+  }
+}
+
+function doSubLogout() {
+  localStorage.removeItem('dfa_unlocked');
+  IS_UNLOCKED = false;
+  location.reload();
+}
+
+loadDeals();
+</script>
+</body>
+</html>
